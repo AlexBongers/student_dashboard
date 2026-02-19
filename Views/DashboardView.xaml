@@ -102,7 +102,30 @@
                         <DataTemplate>
                             <Border Background="{DynamicResource Gray100}" CornerRadius="4" Margin="0,0,8,8" Padding="6,2" ToolTip="{Binding Value}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Fill="{DynamicResource PrimaryColor}" Margin="0,0,4,0"/>
+                                    <Ellipse Width="8" Height="8" Margin="0,0,4,0">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="{DynamicResource PrimaryColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ColorResource}" Value="InfoColor">
+                                                        <Setter Property="Fill" Value="{DynamicResource InfoColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ColorResource}" Value="WarningColor">
+                                                        <Setter Property="Fill" Value="{DynamicResource WarningColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ColorResource}" Value="SuccessColor">
+                                                        <Setter Property="Fill" Value="{DynamicResource SuccessColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ColorResource}" Value="DangerColor">
+                                                        <Setter Property="Fill" Value="{DynamicResource DangerColor}"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ColorResource}" Value="Gray400">
+                                                        <Setter Property="Fill" Value="{DynamicResource Gray400}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
                                     <TextBlock Text="{Binding Label}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}"/>
                                     <TextBlock Text="{Binding Value, StringFormat=' ({0})'}" FontSize="10" Foreground="{DynamicResource Gray500}"/>
                                 </StackPanel>
