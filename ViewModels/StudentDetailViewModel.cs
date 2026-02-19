@@ -113,6 +113,33 @@ namespace StageManagementSystem.ViewModels
             System.Windows.MessageBox.Show("Notities opgeslagen!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
+        [RelayCommand]
+        public void SendEmail()
+        {
+            if (Student == null || string.IsNullOrWhiteSpace(Student.Email))
+            {
+                System.Windows.MessageBox.Show("Geen emailadres gevonden voor deze student.", "Email", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                return;
+            }
+
+            try
+            {
+                string subject = Uri.EscapeDataString($"Stage Update: {Student.Name}");
+                string body = Uri.EscapeDataString($"Beste {Student.FirstName},\n\n");
+                string mailtoUri = $"mailto:{Student.Email}?subject={subject}&body={body}";
+                
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = mailtoUri,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Kan email programma niet openen: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
         private async Task SyncStatusToWorkflowAsync(string newStatus)
         {
             if (Student == null || string.IsNullOrEmpty(newStatus)) return;
