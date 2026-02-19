@@ -68,9 +68,49 @@ namespace StageManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        public void Export()
+        public async Task Export()
         {
-            System.Windows.MessageBox.Show("Export feature coming soon!", "Export", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "CSV (Comma delimited)|*.csv",
+                Title = "Exporteer Studenten",
+                FileName = $"StudentenExport_{DateTime.Now:yyyyMMdd}.csv"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var students = await _studentService.GetActiveStudentsAsync();
+                    var sb = new System.Text.StringBuilder();
+                    
+                    // Header
+                    sb.AppendLine("Voornaam,Achternaam,Studentnummer,Bedrijf,Type,Rol,Status,Email,StartDatum,EindDatum");
+                    
+                    foreach (var s in students)
+                    {
+                        // Escape quotes and commas by wrapping in quotes
+                        string SafeCsv(string? input)
+                        {
+                            if (string.IsNullOrEmpty(input)) return "";
+                            if (input.Contains(",") || input.Contains("\"") || input.Contains("\n"))
+                            {
+                                return $"\"{input.Replace("\"", "\"\"")}\"";
+                            }
+                            return input;
+                        }
+
+                        sb.AppendLine($"{SafeCsv(s.FirstName)},{SafeCsv(s.LastName)},{SafeCsv(s.StudentNumber)},{SafeCsv(s.Company)},{SafeCsv(s.Type)},{SafeCsv(s.MyRole)},{SafeCsv(s.Status)},{SafeCsv(s.Email)},{s.StartDate:yyyy-MM-dd},{s.EndDate:yyyy-MM-dd}");
+                    }
+
+                    System.IO.File.WriteAllText(dialog.FileName, sb.ToString(), System.Text.Encoding.UTF8);
+                    System.Windows.MessageBox.Show("Export succesvol!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Fout bij exporteren: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
+            }
         }
 
         [RelayCommand]
