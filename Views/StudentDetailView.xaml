@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StageManagementSystem.Views"
+             xmlns:helpers="clr-namespace:StageManagementSystem.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="600">
     <Border Style="{StaticResource CardStyle}">
@@ -360,13 +361,34 @@
                     <TabItem Header="Notities">
                         <Grid Margin="0,16,0,0">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <TextBox Text="{Binding Student.Notes}" AcceptsReturn="True" TextWrapping="Wrap" 
-                                     BorderThickness="1" BorderBrush="{DynamicResource Gray200}" Padding="10" 
-                                     VerticalScrollBarVisibility="Auto"/>
-                            <Button Grid.Row="1" Content="Opslaan" Command="{Binding SaveNotesCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+                            
+                            <!-- Rich Text Toolbar -->
+                            <ToolBarTray Grid.Row="0" Background="Transparent" IsLocked="True">
+                                <ToolBar Background="Transparent" BorderThickness="0" Margin="0,0,0,8">
+                                    <Button Command="EditingCommands.ToggleBold" ToolTip="Vetgedrukt (Ctrl+B)" FontWeight="Bold" Content="B" Width="24" Background="Transparent" BorderThickness="0"/>
+                                    <Button Command="EditingCommands.ToggleItalic" ToolTip="Cursief (Ctrl+I)" FontStyle="Italic" Content="I" Width="24" Background="Transparent" BorderThickness="0"/>
+                                    <Button Command="EditingCommands.ToggleUnderline" ToolTip="Onderstreept (Ctrl+U)" Width="24" Background="Transparent" BorderThickness="0">
+                                        <TextBlock Text="U" TextDecorations="Underline"/>
+                                    </Button>
+                                    <Separator/>
+                                    <Button Command="EditingCommands.ToggleBullets" ToolTip="Opsomming" Content="•" Width="24" Background="Transparent" BorderThickness="0"/>
+                                    <Button Command="EditingCommands.ToggleNumbering" ToolTip="Genummerde lijst" Content="1." Width="24" Background="Transparent" BorderThickness="0"/>
+                                </ToolBar>
+                            </ToolBarTray>
+                            
+                            <RichTextBox x:Name="NotesRichTextBox" Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource Gray200}" Background="{DynamicResource SurfaceBrush}" Foreground="{DynamicResource TextPrimaryColor}" Padding="8" helpers:RichTextBoxHelper.Rtf="{Binding Student.Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto">
+                                <RichTextBox.Resources>
+                                    <Style TargetType="{x:Type Paragraph}">
+                                        <Setter Property="Margin" Value="0,0,0,8"/>
+                                    </Style>
+                                </RichTextBox.Resources>
+                            </RichTextBox>
+                            
+                            <Button Grid.Row="2" Content="Opslaan" Command="{Binding SaveNotesCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
