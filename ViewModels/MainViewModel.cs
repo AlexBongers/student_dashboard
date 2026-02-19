@@ -119,9 +119,61 @@ namespace StageManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        public void Import()
+        public async Task Import()
         {
-             System.Windows.MessageBox.Show("Import feature coming soon!", "Import", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "CSV (Comma delimited)|*.csv",
+                Title = "Importeer Studenten"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string[] lines = System.IO.File.ReadAllLines(dialog.FileName);
+                    if (lines.Length <= 1) return; // Empty or just header
+
+                    int importedCount = 0;
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        var line = lines[i];
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+
+                        var values = line.Split(',');
+
+                        if (values.Length >= 4)
+                        {
+                            var student = new Student
+                            {
+                                FirstName = values[0].Trim('"', ' '),
+                                LastName = values[1].Trim('"', ' '),
+                                StudentNumber = values.Length > 2 ? values[2].Trim('"', ' ') : "",
+                                Company = values.Length > 3 ? values[3].Trim('"', ' ') : "",
+                                Type = values.Length > 4 ? values[4].Trim('"', ' ') : "stage",
+                                MyRole = values.Length > 5 ? values[5].Trim('"', ' ') : "docentbegeleider",
+                                Status = values.Length > 6 ? values[6].Trim('"', ' ') : "Opstart",
+                                Email = values.Length > 7 ? values[7].Trim('"', ' ') : "",
+                                StartDate = values.Length > 8 && DateTime.TryParse(values[8].Trim('"', ' '), out var sd) ? sd : DateTime.Today,
+                                EndDate = values.Length > 9 && DateTime.TryParse(values[9].Trim('"', ' '), out var ed) ? ed : DateTime.Today.AddMonths(5)
+                            };
+
+                            await _studentService.AddStudentAsync(student);
+                            importedCount++;
+                        }
+                    }
+
+                    if (importedCount > 0)
+                    {
+                        System.Windows.MessageBox.Show($"{importedCount} student(en) succesvol geïmporteerd!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                        await Refresh();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Fout bij importeren: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
+            }
         }
 
         [RelayCommand]
@@ -143,7 +195,7 @@ namespace StageManagementSystem.ViewModels
              }
              NeedsActionCount = action;
 
-             InReviewCount = students.Count(s => s.Status == "concept1" || s.Status == "concept2" || s.Status == "eindversie");
+             InReviewCount = students.Count(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie" || s.Status == "Definitief");
              
              var archived = await _studentService.GetArchivedStudentsAsync();
              // For simplicity, defining "Completed this month" as archived this month or end date this month
@@ -163,14 +215,14 @@ namespace StageManagementSystem.ViewModels
                  // Map statuses to theme colors
                  string GetColorForStatus(string status) => status switch
                  {
-                     "opstart" => "InfoColor",
-                     "pva" => "WarningColor",
-                     "concept1" => "PrimaryColor",
-                     "concept2" => "PrimaryColor",
-                     "eindversie" => "SuccessColor",
-                     "definitief" => "SuccessColor",
-                     "afgerond" => "SuccessColor",
-                     "herkansing" => "DangerColor",
+                     "Opstart" => "InfoColor",
+                     "PvA" => "WarningColor",
+                     "Concept 1" => "PrimaryColor",
+                     "Concept 2" => "PrimaryColor",
+                     "Eindversie" => "SuccessColor",
+                     "Definitief" => "SuccessColor",
+                     "Afgerond" => "SuccessColor",
+                     "Herkansing" => "DangerColor",
                      _ => "Gray400"
                  };
 

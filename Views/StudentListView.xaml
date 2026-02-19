@@ -45,14 +45,21 @@
                     
                     <CheckBox Content="Toon gearchiveerde studenten" IsChecked="{Binding ShowArchived}" Margin="4,0,0,12" Foreground="{DynamicResource Gray600}"/>
                     
-                    <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="Alle" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=all}" 
-                                     Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
-                        <RadioButton Content="Stage" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=stage}" 
-                                     Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
-                        <RadioButton Content="Afstudeer" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=scriptie}" 
-                                     Style="{StaticResource TabButtonStyle}"/>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Content="Alle" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=all}" 
+                                         Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
+                            <RadioButton Content="Stage" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=stage}" 
+                                         Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
+                            <RadioButton Content="Afstudeer" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=scriptie}" 
+                                         Style="{StaticResource TabButtonStyle}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="📦 Archiveren" Command="{Binding BulkArchiveCommand}" Style="{StaticResource BtnSecondary}" Padding="12,4" ToolTip="Archiveer geselecteerde studenten"/>
+                    </Grid>
                 </StackPanel>
             </Border>
 
@@ -91,12 +98,16 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
+
+                            <!-- Bulk Checkbox -->
+                            <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                             
                             <!-- Avatar / Initials -->
-                            <Border Width="40" Height="40" CornerRadius="20" Background="{DynamicResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
+                            <Border Grid.Column="1" Width="40" Height="40" CornerRadius="20" Background="{DynamicResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
                                 <Grid>
                                     <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">
                                         <TextBlock.Style>
@@ -134,7 +145,7 @@
                                 </Grid>
                             </Border>
 
-                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource Gray800}" FontSize="14"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                     <TextBlock Text="{Binding Company}" Foreground="{DynamicResource Gray600}" FontSize="12" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
@@ -142,7 +153,7 @@
                             </StackPanel>
                             
                             <!-- Pill & Warning Badge -->
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
                                 <TextBlock Text="⚠️" Foreground="{DynamicResource DangerColor}" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="Urgent of Verlopen Deadline!">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">

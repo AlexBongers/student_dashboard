@@ -123,8 +123,8 @@
                             <!-- Basic styling to mimic the old pill look but keep dropdown functionality -->
                             <ComboBox.ItemContainerStyle>
                                 <Style TargetType="ComboBoxItem">
-                                    <Setter Property="Foreground" Value="{DynamicResource Gray800}"/>
-                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColor}"/>
+                                    <Setter Property="Background" Value="{DynamicResource SurfaceColor}"/>
                                 </Style>
                             </ComboBox.ItemContainerStyle>
                         </ComboBox>

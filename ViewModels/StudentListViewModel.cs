@@ -97,7 +97,7 @@ namespace StageManagementSystem.ViewModels
                     });
                     break;
                 case StatFilter.InReview:
-                    filtered = filtered.Where(s => s.Status == "concept1" || s.Status == "concept2" || s.Status == "eindversie");
+                    filtered = filtered.Where(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie");
                     break;
                 case StatFilter.Active:
                     // Just basic active list, potentially already filtered by LoadData
@@ -116,10 +116,37 @@ namespace StageManagementSystem.ViewModels
         {
              student.Archived = !student.Archived;
              student.ArchivedAt = student.Archived ? DateTime.Now : null;
-             student.Status = student.Archived ? "afgerond" : student.Status;
+             student.Status = student.Archived ? "Afgerond" : student.Status;
              
              await _studentService.UpdateStudentAsync(student);
              await LoadData(); // Refresh list to remove/add it based on current view
+        }
+
+        [RelayCommand]
+        public async Task BulkArchive()
+        {
+            var selectedStudents = Students.Where(s => s.IsSelected).ToList();
+            if (!selectedStudents.Any()) 
+            {
+                System.Windows.MessageBox.Show("Selecteer eerst één of meerdere studenten.", "Bulk Archiveren", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                return;
+            }
+
+            var result = System.Windows.MessageBox.Show($"Weet je zeker dat je {selectedStudents.Count} student(en) wilt archiveren?", "Bevestiging", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (result != System.Windows.MessageBoxResult.Yes) return;
+
+            foreach (var student in selectedStudents)
+            {
+                student.Archived = true;
+                student.ArchivedAt = DateTime.Now;
+                student.Status = "Afgerond";
+                await _studentService.UpdateStudentAsync(student);
+            }
+
+            // Deselect all
+            foreach (var s in _allStudents) s.IsSelected = false;
+
+            await LoadData();
         }
     }
 }

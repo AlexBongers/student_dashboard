@@ -37,7 +37,7 @@ namespace StageManagementSystem.Models
         
         public DateTime EndDate { get; set; }
         
-        public string Status { get; set; } = "opstart";
+        public string Status { get; set; } = "Opstart";
         
         public string? Notes { get; set; }
         
@@ -55,5 +55,7 @@ namespace StageManagementSystem.Models
         public virtual ICollection<WorkflowStep> WorkflowSteps { get; set; } = new List<WorkflowStep>();
         public virtual ICollection<Deadline> Deadlines { get; set; } = new List<Deadline>();
         public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public bool IsSelected { get; set; } // For UI bulk actions
     }
 }

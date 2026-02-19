@@ -190,7 +190,7 @@ namespace StageManagementSystem.ViewModels
             
             Student.Archived = !Student.Archived;
             Student.ArchivedAt = Student.Archived ? DateTime.Now : null;
-            Student.Status = Student.Archived ? "afgerond" : Student.Status;
+            Student.Status = Student.Archived ? "Afgerond" : Student.Status;
             
             await _studentService.UpdateStudentAsync(Student);
             
@@ -340,13 +340,13 @@ namespace StageManagementSystem.ViewModels
             // Merged definitions from Student Tracker
             return new List<(string, string)>
             {
-                ("opstart", "Opstart"),
-                ("pva", "PvA / Stageplan"),
-                ("concept1", "1e Concept Verslag"),
-                ("concept2", "2e Concept Verslag"),
-                ("definitief", "Definitief Verslag"),
-                ("herkansing", "Herkansing"),
-                ("afgerond", "Afgerond")
+                ("Opstart", "Opstart"),
+                ("PvA", "PvA / Stageplan"),
+                ("Concept 1", "1e Concept Verslag"),
+                ("Concept 2", "2e Concept Verslag"),
+                ("Definitief", "Definitief Verslag"),
+                ("Herkansing", "Herkansing"),
+                ("Afgerond", "Afgerond")
             };
         }
     }

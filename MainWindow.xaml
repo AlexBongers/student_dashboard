@@ -28,6 +28,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
                 <StackPanel Orientation="Horizontal">
@@ -54,12 +55,17 @@
                         Style="{StaticResource BtnSecondary}"
                         ToolTip="Toggle Dark Mode"/>
 
-                <Button Grid.Column="3" Content="📤 Exporteer" 
+                <Button Grid.Column="3" Content="📥 Importeer" 
+                        Command="{Binding ImportCommand}" 
+                        Margin="0,0,12,0"
+                        Style="{StaticResource BtnSecondary}"/>
+
+                <Button Grid.Column="4" Content="📤 Exporteer" 
                         Command="{Binding ExportCommand}" 
                         Margin="0,0,12,0"
                         Style="{StaticResource BtnSecondary}"/>
 
-                <Button Grid.Column="4" Content="➕ Nieuwe Student" 
+                <Button Grid.Column="5" Content="➕ Nieuwe Student" 
                         Command="{Binding AddStudentCommand}" 
                         Style="{StaticResource BtnPrimary}"/>
             </Grid>

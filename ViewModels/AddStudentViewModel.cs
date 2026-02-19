@@ -108,7 +108,7 @@ namespace StageManagementSystem.ViewModels
                 Location = Location,
                 StartDate = StartDate,
                 EndDate = EndDate,
-                Status = "opstart", // New default
+                Status = "Opstart", // New default
                 CreatedAt = DateTime.Now,
                 ProfilePicturePath = ProfilePicturePath
             };
