@@ -78,6 +78,7 @@ namespace StageManagementSystem.ViewModels
                 Deadlines.Clear();
                 Attachments.Clear();
             }
+            OnPropertyChanged(nameof(ArchiveButtonText));
         }
         
         [RelayCommand]
@@ -116,6 +117,33 @@ namespace StageManagementSystem.ViewModels
              {
                  Student = updated; // Re-trigger OnStudentChanged to refresh UI
              }
+        }
+        
+        public string ArchiveButtonText => Student?.Archived == true ? "Herstellen" : "Archiveren";
+        
+        [RelayCommand]
+        public async Task ArchiveStudent()
+        {
+            if (Student == null) return;
+            
+            Student.Archived = !Student.Archived;
+            Student.ArchivedAt = Student.Archived ? DateTime.Now : null;
+            Student.Status = Student.Archived ? "afgerond" : Student.Status;
+            
+            await _studentService.UpdateStudentAsync(Student);
+            
+            // Re-trigger property changed to update UI
+            OnPropertyChanged(nameof(Student));
+            OnPropertyChanged(nameof(ArchiveButtonText));
+            
+            System.Windows.MessageBox.Show(
+                Student.Archived ? "Student gearchiveerd!" : "Student hersteld!",
+                "Succes", 
+                System.Windows.MessageBoxButton.OK, 
+                System.Windows.MessageBoxImage.Information);
+                
+            // Ideally we'd broadcast an event here so StudentListViewModel can reload
+            // For now, the user can just re-select or refresh the list by clicking.
         }
         
         [RelayCommand]

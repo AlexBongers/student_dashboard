@@ -16,10 +16,10 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <Border BorderBrush="{StaticResource Gray100}" BorderThickness="0,0,0,1" Padding="20,16">
+            <Border BorderBrush="{DynamicResource Gray100}" BorderThickness="0,0,0,1" Padding="20,16">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="👥 Studenten" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Foreground="{StaticResource Gray600}" VerticalAlignment="Center" Margin="5,0,0,0">
+                    <TextBlock Foreground="{DynamicResource Gray600}" VerticalAlignment="Center" Margin="5,0,0,0">
                         <Run Text="("/>
                         <Run Text="{Binding Students.Count, Mode=OneWay}"/>
                         <Run Text=")"/>
@@ -30,18 +30,20 @@
             <!-- Filters -->
             <Border Grid.Row="1" Padding="16,0,16,16">
                 <StackPanel>
-                    <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,12" Padding="8,4">
+                    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,12" Padding="8,4">
                          <Grid>
                              <Grid.ColumnDefinitions>
                                  <ColumnDefinition Width="Auto"/>
                                  <ColumnDefinition Width="*"/>
                              </Grid.ColumnDefinitions>
-                             <TextBlock Text="🔍" Margin="4,0,8,0" VerticalAlignment="Center" Foreground="{StaticResource Gray600}"/>
+                             <TextBlock Text="🔍" Margin="4,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}"/>
                              <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
                                       Grid.Column="1" BorderThickness="0" Background="Transparent" 
                                       VerticalContentAlignment="Center" helpers:Placeholders.Text="Zoeken..."/>
                          </Grid>
                     </Border>
+                    
+                    <CheckBox Content="Toon gearchiveerde studenten" IsChecked="{Binding ShowArchived}" Margin="4,0,0,12" Foreground="{DynamicResource Gray600}"/>
                     
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Content="Alle" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=all}" 
@@ -65,17 +67,17 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListBoxItem">
-                                    <Border x:Name="Bd" Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="12" Padding="12">
+                                    <Border x:Name="Bd" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="12" Padding="12">
                                         <ContentPresenter/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
                                             <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
-                                            <Setter TargetName="Bd" Property="Background" Value="#F5F3FF"/> <!-- Light Indigo -->
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SelectionBackgroundBrush}"/> 
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
                                             <Setter Property="Cursor" Value="Hand"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
@@ -94,20 +96,20 @@
                             </Grid.ColumnDefinitions>
                             
                             <!-- Avatar / Initials -->
-                            <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
+                            <Border Width="40" Height="40" CornerRadius="20" Background="{DynamicResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
                                 <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
                             </Border>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource Gray800}" FontSize="14"/>
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource Gray800}" FontSize="14"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                    <TextBlock Text="{Binding Company}" Foreground="{StaticResource Gray600}" FontSize="12" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
+                                    <TextBlock Text="{Binding Company}" Foreground="{DynamicResource Gray600}" FontSize="12" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
                                 </StackPanel>
                             </StackPanel>
                             
                             <!-- Pill -->
-                            <Border Grid.Column="2" Background="{StaticResource Gray100}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource Gray600}"/>
+                            <Border Grid.Column="2" Background="{DynamicResource Gray100}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Gray600}"/>
                             </Border>
                         </Grid>
                     </DataTemplate>

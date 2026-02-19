@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Nieuwe Student Toevoegen" Height="650" Width="600"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-        Background="{StaticResource Gray50}">
+        Background="{DynamicResource Gray50}">
     <Border Padding="20">
         <Grid>
             <Grid.RowDefinitions>

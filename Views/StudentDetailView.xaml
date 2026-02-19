@@ -23,7 +23,7 @@
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <TextBlock Text="👈" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                     <TextBlock Text="Selecteer een student" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Klik op een student in de lijst om details te bekijken" Foreground="{StaticResource Gray600}" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Klik op een student in de lijst om details te bekijken" Foreground="{DynamicResource Gray600}" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Grid>
 
@@ -53,25 +53,28 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource Gray800}"/>
+                        <TextBlock Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Gray800}"/>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Student.StudentNumber}" Foreground="{StaticResource Gray600}"/>
-                            <TextBlock Text=" • " Foreground="{StaticResource Gray600}"/>
-                            <TextBlock Text="{Binding Student.Type}" Foreground="{StaticResource Gray600}"/>
-                            <TextBlock Text=" • " Foreground="{StaticResource Gray600}"/>
-                            <TextBlock Text="{Binding Student.MyRole}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Student.StudentNumber}" Foreground="{DynamicResource Gray600}"/>
+                            <TextBlock Text=" • " Foreground="{DynamicResource Gray600}"/>
+                            <TextBlock Text="{Binding Student.Type}" Foreground="{DynamicResource Gray600}"/>
+                            <TextBlock Text=" • " Foreground="{DynamicResource Gray600}"/>
+                            <TextBlock Text="{Binding Student.MyRole}" Foreground="{DynamicResource PrimaryColor}" FontWeight="SemiBold"/>
                         </StackPanel>
                          <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                              <TextBlock Text="📧 "/>
-                             <TextBlock Text="{Binding Student.Email}" Foreground="{StaticResource Gray600}" Margin="0,0,10,0"/>
+                             <TextBlock Text="{Binding Student.Email}" Foreground="{DynamicResource Gray600}" Margin="0,0,10,0"/>
                              <TextBlock Text="📞 "/>
-                             <TextBlock Text="{Binding Student.Phone}" Foreground="{StaticResource Gray600}"/>
+                             <TextBlock Text="{Binding Student.Phone}" Foreground="{DynamicResource Gray600}"/>
                          </StackPanel>
                     </StackPanel>
                     <!-- Status Dropdown or Pill -->
-                    <Border Grid.Column="1" Background="{StaticResource PrimaryColor}" CornerRadius="12" Padding="12,6" VerticalAlignment="Top">
-                        <TextBlock Text="{Binding Student.Status}" Foreground="White" FontWeight="Bold" FontSize="12"/>
-                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <Border Background="{DynamicResource PrimaryColor}" CornerRadius="12" Padding="12,6" Margin="0,0,0,8" HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding Student.Status}" Foreground="White" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
+                        </Border>
+                        <Button Content="{Binding ArchiveButtonText}" Command="{Binding ArchiveStudentCommand}" Style="{StaticResource BtnSecondary}" Padding="12,6" FontSize="12"/>
+                    </StackPanel>
                 </Grid>
 
                 <!-- Tabs -->
@@ -90,12 +93,12 @@
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsSelected" Value="True">
-                                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
-                                                <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
                                                 <Setter Property="FontWeight" Value="SemiBold"/>
                                             </Trigger>
                                             <Trigger Property="IsSelected" Value="False">
-                                                <Setter Property="Foreground" Value="{StaticResource Gray600}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource Gray600}"/>
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
@@ -122,7 +125,7 @@
                              <ItemsControl ItemsSource="{Binding WorkflowSteps}" Margin="0,16,0,0">
                                  <ItemsControl.ItemTemplate>
                                      <DataTemplate>
-                                         <Border Background="{StaticResource Gray50}" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                         <Border Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
                                              <Grid>
                                                  <Grid.ColumnDefinitions>
                                                      <ColumnDefinition Width="Auto"/>
@@ -135,7 +138,7 @@
                                                  <TextBlock Grid.Column="1" Text="{Binding Label}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
                                                  <TextBlock Grid.Column="2" 
                                                             Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                            Foreground="{StaticResource SuccessColor}" FontSize="12" VerticalAlignment="Center">
+                                                            Foreground="{DynamicResource SuccessColor}" FontSize="12" VerticalAlignment="Center">
                                                      <Run Text="✓ "/>
                                                      <Run Text="{Binding Date, StringFormat=d}"/>
                                                  </TextBlock>
@@ -155,7 +158,7 @@
                              </Grid.RowDefinitions>
                              
                              <!-- Add Deadline -->
-                             <Border Background="{StaticResource Gray50}" Padding="10" CornerRadius="8" Margin="0,0,0,16">
+                             <Border Background="{DynamicResource Gray50}" Padding="10" CornerRadius="8" Margin="0,0,0,16">
                                  <Grid>
                                      <Grid.ColumnDefinitions>
                                          <ColumnDefinition Width="*"/>
@@ -172,7 +175,7 @@
                                  <ItemsControl ItemsSource="{Binding Deadlines}">
                                      <ItemsControl.ItemTemplate>
                                          <DataTemplate>
-                                             <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
+                                             <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
                                                  <Grid>
                                                      <Grid.ColumnDefinitions>
                                                          <ColumnDefinition Width="Auto"/> <!-- Checkbox -->
@@ -188,7 +191,7 @@
                                                      <TextBlock Grid.Column="1" Text="{Binding Title}" VerticalAlignment="Center" Margin="12,0,0,0"
                                                                 TextDecorations="{Binding IsCompleted, Converter={StaticResource BooleanToTextDecorationsConverter}}"/> <!-- Need converter or style -->
                                                                 
-                                                     <TextBlock Grid.Column="2" Text="{Binding DueDate, StringFormat=d}" VerticalAlignment="Center" Foreground="{StaticResource Gray600}" Margin="12,0,12,0"/>
+                                                     <TextBlock Grid.Column="2" Text="{Binding DueDate, StringFormat=d}" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}" Margin="12,0,12,0"/>
                                                      
                                                      <Button Grid.Column="3" Content="🗑️" Background="Transparent" BorderThickness="0" 
                                                              Command="{Binding DataContext.DeleteDeadlineCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -213,13 +216,13 @@
                                 <ItemsControl ItemsSource="{Binding Contacts}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,10" Padding="0">
+                                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,10" Padding="0">
                                                 <Grid>
                                                     <Rectangle HorizontalAlignment="Left" Width="3" Fill="#3b82f6" RadiusX="2" RadiusY="2" Margin="0,1,0,1"/>
                                                     <StackPanel Margin="15,12,12,12">
                                                         <Grid Margin="0,0,0,4">
-                                                            <TextBlock Text="{Binding Type}" FontWeight="Bold" Foreground="{StaticResource InfoColor}"/>
-                                                            <TextBlock Text="{Binding Date, StringFormat=d}" HorizontalAlignment="Right" Foreground="{StaticResource Gray600}" FontSize="12"/>
+                                                            <TextBlock Text="{Binding Type}" FontWeight="Bold" Foreground="{DynamicResource InfoColor}"/>
+                                                            <TextBlock Text="{Binding Date, StringFormat=d}" HorizontalAlignment="Right" Foreground="{DynamicResource Gray600}" FontSize="12"/>
                                                         </Grid>
                                                         <TextBlock Text="{Binding Content}" TextWrapping="Wrap"/>
                                                     </StackPanel>
@@ -230,7 +233,7 @@
                                 </ItemsControl>
                             </ScrollViewer>
 
-                            <Border Grid.Row="1" Background="{StaticResource Gray50}" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Border Grid.Row="1" Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16">
                                 <StackPanel>
                                     <TextBlock Text="Nieuw contactmoment" FontWeight="Bold" Margin="0,0,0,8"/>
                                     <Grid Margin="0,0,0,8">
@@ -267,7 +270,7 @@
                                 <ItemsControl ItemsSource="{Binding Attachments}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                             <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
+                                             <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
                                                  <Grid>
                                                      <Grid.ColumnDefinitions>
                                                          <ColumnDefinition Width="Auto"/> <!-- Icon -->
@@ -279,7 +282,7 @@
                                                      
                                                      <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                          <TextBlock Text="{Binding FileName}" FontWeight="SemiBold"/>
-                                                         <TextBlock Text="{Binding UploadDate, StringFormat=g}" FontSize="12" Foreground="{StaticResource Gray600}"/>
+                                                         <TextBlock Text="{Binding UploadDate, StringFormat=g}" FontSize="12" Foreground="{DynamicResource Gray600}"/>
                                                      </StackPanel>
                                                      
                                                      <StackPanel Grid.Column="2" Orientation="Horizontal">
@@ -306,7 +309,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBox Text="{Binding Student.Notes}" AcceptsReturn="True" TextWrapping="Wrap" 
-                                     BorderThickness="1" BorderBrush="{StaticResource Gray200}" Padding="10" 
+                                     BorderThickness="1" BorderBrush="{DynamicResource Gray200}" Padding="10" 
                                      VerticalScrollBarVisibility="Auto"/>
                             <Button Grid.Row="1" Content="Opslaan" Command="{Binding SaveNotesCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
                         </Grid>

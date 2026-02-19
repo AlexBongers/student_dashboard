@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Dark Theme Colors -->
+    <SolidColorBrush x:Key="PrimaryColor" Color="#6366f1"/>
+    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#4f46e5"/>
+    <SolidColorBrush x:Key="SecondaryColor" Color="#8b5cf6"/>
+    <SolidColorBrush x:Key="SuccessColor" Color="#34d399"/>
+    <SolidColorBrush x:Key="WarningColor" Color="#fbbf24"/>
+    <SolidColorBrush x:Key="DangerColor" Color="#f87171"/>
+    <SolidColorBrush x:Key="InfoColor" Color="#60a5fa"/>
+    <SolidColorBrush x:Key="Gray50" Color="#111827"/>
+    <SolidColorBrush x:Key="Gray100" Color="#1f2937"/>
+    <SolidColorBrush x:Key="Gray200" Color="#374151"/>
+    <SolidColorBrush x:Key="Gray600" Color="#9ca3af"/>
+    <SolidColorBrush x:Key="Gray800" Color="#f3f4f6"/>
+    
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#1f2937"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#f3f4f6"/>
+    <SolidColorBrush x:Key="SelectionBackgroundBrush" Color="#3730A3"/>
+</ResourceDictionary>

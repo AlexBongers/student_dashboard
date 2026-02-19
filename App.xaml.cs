@@ -54,8 +54,8 @@ namespace StageManagementSystem
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Startup Error: {ex.Message}\n\n{ex.StackTrace}", "Runtime Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Shutdown();
+                System.IO.File.WriteAllText("startup_error.txt", $"Startup Error: {ex.Message}\n\n{ex.StackTrace}");
+                Shutdown(-1);
             }
         }
     }

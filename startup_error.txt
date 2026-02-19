@@ -1,4 +1,4 @@
-Startup Error: 'Add value to collection of type 'System.Windows.SetterBaseCollection' threw an exception.' Line number '100' and line position '112'.
+Startup Error: 'Provide value on 'System.Windows.Baml2006.TypeConverterMarkupExtension' threw an exception.' Line number '12' and line position '9'.
 
    at System.Windows.Markup.XamlReader.RewrapException(Exception e, IXamlLineInfo lineInfo, Uri baseUri)
    at System.Windows.Markup.WpfXamlLoader.Load(XamlReader xamlReader, IXamlObjectWriterFactory writerFactory, Boolean skipJournaledProperties, Object rootObject, XamlObjectWriterSettings settings, Uri baseUri)
@@ -6,7 +6,7 @@ Startup Error: 'Add value to collection of type 'System.Windows.SetterBaseCollec
    at System.Windows.Markup.XamlReader.LoadBaml(Stream stream, ParserContext parserContext, Object parent, Boolean closeStream)
    at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
    at StageManagementSystem.MainWindow.InitializeComponent() in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\MainWindow.xaml:line 1
-   at StageManagementSystem.MainWindow..ctor(MainViewModel viewModel) in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\MainWindow.xaml.cs:line 22
+   at StageManagementSystem.MainWindow..ctor(MainViewModel viewModel) in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\MainWindow.xaml.cs:line 24
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
