@@ -45,6 +45,8 @@ namespace StageManagementSystem.Models
         
         public DateTime? ArchivedAt { get; set; }
         
+        public bool HasUrgentDeadline => Deadlines?.Any(d => !d.IsCompleted && (d.DueDate.Date - DateTime.Today).TotalDays <= 7) ?? false;
+        
         public string? ProfilePicturePath { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -186,12 +186,14 @@ namespace StageManagementSystem.ViewModels
             Deadlines = new ObservableCollection<Deadline>(sorted);
             
             NewDeadlineTitle = "";
+            OnPropertyChanged(nameof(Student));
         }
 
         [RelayCommand]
         public async Task ToggleDeadline(Deadline deadline)
         {
             await _studentService.UpdateDeadlineAsync(deadline);
+            OnPropertyChanged(nameof(Student));
         }
 
         [RelayCommand]
@@ -199,6 +201,7 @@ namespace StageManagementSystem.ViewModels
         {
             await _studentService.DeleteDeadlineAsync(deadline);
             Deadlines.Remove(deadline);
+            OnPropertyChanged(nameof(Student));
         }
         
         [RelayCommand]
