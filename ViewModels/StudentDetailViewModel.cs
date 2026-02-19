@@ -181,6 +181,8 @@ namespace StageManagementSystem.ViewModels
 
             await _studentService.AddDeadlineAsync(deadline);
             Deadlines.Add(deadline);
+            Student?.Deadlines?.Add(deadline); // Keep model in sync for HasUrgentDeadline
+            
             // Re-sort
             var sorted = Deadlines.OrderBy(d => d.DueDate).ToList();
             Deadlines = new ObservableCollection<Deadline>(sorted);
@@ -201,6 +203,7 @@ namespace StageManagementSystem.ViewModels
         {
             await _studentService.DeleteDeadlineAsync(deadline);
             Deadlines.Remove(deadline);
+            Student?.Deadlines?.Remove(deadline); // Keep model in sync
             OnPropertyChanged(nameof(Student));
         }
         
