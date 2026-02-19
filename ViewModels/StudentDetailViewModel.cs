@@ -56,6 +56,23 @@ namespace StageManagementSystem.ViewModels
         // New Deadline inputs
         [ObservableProperty] private string _newDeadlineTitle = "";
         [ObservableProperty] private DateTime _newDeadlineDate = DateTime.Today.AddDays(7);
+        // Status Sync properties
+        [ObservableProperty]
+        private ObservableCollection<string> _availableStatuses = new();
+        
+        private string _selectedStatus = "";
+        public string SelectedStatus
+        {
+            get => _selectedStatus;
+            set
+            {
+                if (SetProperty(ref _selectedStatus, value))
+                {
+                    // Trigger Status -> Workflow sync when selection changes
+                    _ = SyncStatusToWorkflowAsync(value);
+                }
+            }
+        }
 
         public StudentDetailViewModel(StudentService studentService)
         {
@@ -66,6 +83,13 @@ namespace StageManagementSystem.ViewModels
         {
             if (value != null)
             {
+                var definitions = GetWorkflowDefinitions(value.Type);
+                AvailableStatuses = new ObservableCollection<string>(definitions.Select(d => d.Key));
+                
+                // Prevent cyclic updates during init by setting backing field directly first
+                _selectedStatus = value.Status;
+                OnPropertyChanged(nameof(SelectedStatus));
+
                 UpdateWorkflowList(value);
                 Contacts = new ObservableCollection<Contact>(value.Contacts.OrderByDescending(c => c.Date));
                 Deadlines = new ObservableCollection<Deadline>(value.Deadlines.OrderBy(d => d.DueDate));
@@ -89,6 +113,36 @@ namespace StageManagementSystem.ViewModels
             System.Windows.MessageBox.Show("Notities opgeslagen!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
         }
 
+        private async Task SyncStatusToWorkflowAsync(string newStatus)
+        {
+            if (Student == null || string.IsNullOrEmpty(newStatus)) return;
+            if (Student.Status == newStatus) return; // Prevent loop
+
+            Student.Status = newStatus;
+
+            var definitions = GetWorkflowDefinitions(Student.Type);
+            int targetIndex = definitions.FindIndex(d => d.Key == newStatus);
+            if (targetIndex != -1)
+            {
+                // Iterate model steps and check off anything before/including this target
+                for (int i = 0; i < definitions.Count; i++)
+                {
+                    bool shouldBeCompleted = i <= targetIndex;
+                    await _studentService.ToggleWorkflowStepAsync(Student.Id, definitions[i].Key, shouldBeCompleted);
+                }
+            }
+
+            await _studentService.UpdateStudentAsync(Student);
+
+            // Fully refresh UI
+            var updated = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
+            if (updated == null) updated = (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
+            if (updated != null)
+            {
+                Student = updated;
+            }
+        }
+
         [RelayCommand]
         public async Task ToggleWorkflow(WorkflowItem item)
         {
@@ -96,27 +150,35 @@ namespace StageManagementSystem.ViewModels
             
             await _studentService.ToggleWorkflowStepAsync(Student.Id, item.Key, item.IsCompleted);
             
-            // Logic to sync status
-            // If checking a box, we might want to update the status to this step? 
-            // Or better: the status should be the "highest" completed step?
-            // Let's assume sequential progress.
+            // Workflow -> Status Sync logic
+            // Find highest completed step to update the status text (dropdown)
+            var definitions = GetWorkflowDefinitions(Student.Type);
             
-            if (item.IsCompleted)
+            // Re-fetch the student to get latest workflow state from DB
+            var updatedStudent = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id) 
+                                 ?? (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
+
+            if (updatedStudent != null)
             {
-                // When marking as complete, set status to this step
-                // Ideally we'd check if this is "higher" than current, but simple approach is fine for now
-                Student.Status = item.Key;
-                await _studentService.UpdateStudentAsync(Student);
+                string highestCompletedKey = definitions.First().Key; // default to first
+
+                foreach (var def in definitions)
+                {
+                    var step = updatedStudent.WorkflowSteps.FirstOrDefault(w => w.StepKey == def.Key);
+                    if (step != null && step.Completed)
+                    {
+                        highestCompletedKey = def.Key; // keeps overwriting until the last completed one is found
+                    }
+                }
+
+                if (Student.Status != highestCompletedKey)
+                {
+                    Student.Status = highestCompletedKey;
+                    await _studentService.UpdateStudentAsync(Student);
+                }
+
+                Student = updatedStudent; // refresh UI completely
             }
-            
-            // Refresh to get updated dates/state
-             var updated = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
-             if (updated == null) updated = (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
-             
-             if (updated != null)
-             {
-                 Student = updated; // Re-trigger OnStudentChanged to refresh UI
-             }
         }
         
         public string ArchiveButtonText => Student?.Archived == true ? "Herstellen" : "Archiveren";

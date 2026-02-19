@@ -110,9 +110,24 @@
                     </StackPanel>
                     <!-- Status Dropdown or Pill -->
                     <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <Border Background="{DynamicResource PrimaryColor}" CornerRadius="12" Padding="12,6" Margin="0,0,0,8" HorizontalAlignment="Right">
-                            <TextBlock Text="{Binding Student.Status}" Foreground="White" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
-                        </Border>
+                        <ComboBox ItemsSource="{Binding AvailableStatuses}" 
+                                  SelectedItem="{Binding SelectedStatus}" 
+                                  Margin="0,0,0,8" 
+                                  HorizontalAlignment="Right"
+                                  Width="120"
+                                  Background="{DynamicResource PrimaryColor}"
+                                  Foreground="White"
+                                  FontWeight="Bold"
+                                  FontSize="12"
+                                  BorderThickness="0">
+                            <!-- Basic styling to mimic the old pill look but keep dropdown functionality -->
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="ComboBoxItem">
+                                    <Setter Property="Foreground" Value="{DynamicResource Gray800}"/>
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+                        </ComboBox>
                         <Button Content="{Binding ArchiveButtonText}" Command="{Binding ArchiveStudentCommand}" Style="{StaticResource BtnSecondary}" Padding="12,6" FontSize="12"/>
                     </StackPanel>
                 </Grid>
