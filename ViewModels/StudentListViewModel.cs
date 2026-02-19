@@ -51,10 +51,18 @@ namespace StageManagementSystem.ViewModels
             // If StatFilter is Completed, we should probably force load archived or ALL.
             // For now, let's load ACTIVE by default, unless ShowArchived is true.
             
-            if (ShowArchived || StatFilter == StatFilter.Completed) 
-                 _allStudents = await _studentService.GetArchivedStudentsAsync();
-            else
-                 _allStudents = await _studentService.GetActiveStudentsAsync();
+            try
+            {
+                if (ShowArchived || StatFilter == StatFilter.Completed) 
+                     _allStudents = await _studentService.GetArchivedStudentsAsync();
+                else
+                     _allStudents = await _studentService.GetActiveStudentsAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Fout bij laden van studenten: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                _allStudents = new List<Student>();
+            }
 
             ApplyFilter();
         }
@@ -118,7 +126,14 @@ namespace StageManagementSystem.ViewModels
              student.ArchivedAt = student.Archived ? DateTime.Now : null;
              student.Status = student.Archived ? "Afgerond" : student.Status;
              
-             await _studentService.UpdateStudentAsync(student);
+             try
+             {
+                 await _studentService.UpdateStudentAsync(student);
+             }
+             catch (Exception ex)
+             {
+                 System.Windows.MessageBox.Show($"Fout bij archiveren bewerken: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+             }
              await LoadData(); // Refresh list to remove/add it based on current view
         }
 
@@ -135,12 +150,20 @@ namespace StageManagementSystem.ViewModels
             var result = System.Windows.MessageBox.Show($"Weet je zeker dat je {selectedStudents.Count} student(en) wilt archiveren?", "Bevestiging", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result != System.Windows.MessageBoxResult.Yes) return;
 
-            foreach (var student in selectedStudents)
+            try
             {
-                student.Archived = true;
-                student.ArchivedAt = DateTime.Now;
-                student.Status = "Afgerond";
-                await _studentService.UpdateStudentAsync(student);
+                foreach (var student in selectedStudents)
+                {
+                    student.Archived = true;
+                    student.ArchivedAt = DateTime.Now;
+                    student.Status = "Afgerond";
+                    await _studentService.UpdateStudentAsync(student);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Fout tijdens bulk archiveren: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                // We'll still try to deselect and reload below so the UI is somewhat fresh.
             }
 
             // Deselect all

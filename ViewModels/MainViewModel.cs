@@ -185,63 +185,70 @@ namespace StageManagementSystem.ViewModels
 
         public async Task UpdateStats()
         {
-             var students = await _studentService.GetActiveStudentsAsync();
-             ActiveCount = students.Count;
-             
-             int action = 0;
-             foreach(var s in students) {
-                 var lastContact = s.Contacts.OrderByDescending(c => c.Date).FirstOrDefault();
-                 if (lastContact == null || (DateTime.Now - lastContact.Date).TotalDays > 14) action++;
-             }
-             NeedsActionCount = action;
-
-             InReviewCount = students.Count(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie" || s.Status == "Definitief");
-             
-             var archived = await _studentService.GetArchivedStudentsAsync();
-             // For simplicity, defining "Completed this month" as archived this month or end date this month
-             var now = DateTime.Now;
-             CompletedMonthCount = archived.Count(s => (s.ArchivedAt.HasValue && s.ArchivedAt.Value.Month == now.Month && s.ArchivedAt.Value.Year == now.Year));
-
-             // Populate Status Distribution Chart
-             var allStudents = students.Concat(archived).ToList();
-             if (allStudents.Any())
+             try
              {
-                 var groups = allStudents.GroupBy(s => s.Status)
-                                         .OrderByDescending(g => g.Count())
-                                         .ToList();
-
-                 var chartData = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+                 var students = await _studentService.GetActiveStudentsAsync();
+                 ActiveCount = students.Count;
                  
-                 // Map statuses to theme colors
-                 string GetColorForStatus(string status) => status switch
-                 {
-                     "Opstart" => "InfoColor",
-                     "PvA" => "WarningColor",
-                     "Concept 1" => "PrimaryColor",
-                     "Concept 2" => "PrimaryColor",
-                     "Eindversie" => "SuccessColor",
-                     "Definitief" => "SuccessColor",
-                     "Afgerond" => "SuccessColor",
-                     "Herkansing" => "DangerColor",
-                     _ => "Gray400"
-                 };
-
-                 foreach (var group in groups)
-                 {
-                     double pct = (double)group.Count() / allStudents.Count;
-                     chartData.Add(new ChartItem(
-                         group.Key.ToUpper(),
-                         group.Count(),
-                         pct, // 0.0 to 1.0
-                         GetColorForStatus(group.Key)
-                     ));
+                 int action = 0;
+                 foreach(var s in students) {
+                     var lastContact = s.Contacts.OrderByDescending(c => c.Date).FirstOrDefault();
+                     if (lastContact == null || (DateTime.Now - lastContact.Date).TotalDays > 14) action++;
                  }
+                 NeedsActionCount = action;
+
+                 InReviewCount = students.Count(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie" || s.Status == "Definitief");
                  
-                 StatusDistribution = chartData;
+                 var archived = await _studentService.GetArchivedStudentsAsync();
+                 // For simplicity, defining "Completed this month" as archived this month or end date this month
+                 var now = DateTime.Now;
+                 CompletedMonthCount = archived.Count(s => (s.ArchivedAt.HasValue && s.ArchivedAt.Value.Month == now.Month && s.ArchivedAt.Value.Year == now.Year));
+
+                 // Populate Status Distribution Chart
+                 var allStudents = students.Concat(archived).ToList();
+                 if (allStudents.Any())
+                 {
+                     var groups = allStudents.GroupBy(s => s.Status)
+                                             .OrderByDescending(g => g.Count())
+                                             .ToList();
+
+                     var chartData = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+                     
+                     // Map statuses to theme colors
+                     string GetColorForStatus(string status) => status switch
+                     {
+                         "Opstart" => "InfoColor",
+                         "PvA" => "WarningColor",
+                         "Concept 1" => "PrimaryColor",
+                         "Concept 2" => "PrimaryColor",
+                         "Eindversie" => "SuccessColor",
+                         "Definitief" => "SuccessColor",
+                         "Afgerond" => "SuccessColor",
+                         "Herkansing" => "DangerColor",
+                         _ => "Gray400"
+                     };
+
+                     foreach (var group in groups)
+                     {
+                         double pct = (double)group.Count() / allStudents.Count;
+                         chartData.Add(new ChartItem(
+                             group.Key.ToUpper(),
+                             group.Count(),
+                             pct, // 0.0 to 1.0
+                             GetColorForStatus(group.Key)
+                         ));
+                     }
+                     
+                     StatusDistribution = chartData;
+                 }
+                 else
+                 {
+                     StatusDistribution = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+                 }
              }
-             else
+             catch (Exception ex)
              {
-                 StatusDistribution = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+                 System.Windows.MessageBox.Show($"Fout bij ophalen statistieken: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
              }
         }
 

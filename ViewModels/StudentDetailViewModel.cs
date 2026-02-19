@@ -109,8 +109,12 @@ namespace StageManagementSystem.ViewModels
         public async Task SaveNotes() 
         {
             if (Student == null) return;
-            await _studentService.UpdateStudentAsync(Student);
-            System.Windows.MessageBox.Show("Notities opgeslagen!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            try {
+                await _studentService.UpdateStudentAsync(Student);
+                System.Windows.MessageBox.Show("Notities opgeslagen!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            } catch (Exception ex) {
+                System.Windows.MessageBox.Show($"Fout bij opslaan notities: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
 
         [RelayCommand]
@@ -175,36 +179,40 @@ namespace StageManagementSystem.ViewModels
         {
             if (Student == null) return;
             
-            await _studentService.ToggleWorkflowStepAsync(Student.Id, item.Key, item.IsCompleted);
-            
-            // Workflow -> Status Sync logic
-            // Find highest completed step to update the status text (dropdown)
-            var definitions = GetWorkflowDefinitions(Student.Type);
-            
-            // Re-fetch the student to get latest workflow state from DB
-            var updatedStudent = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id) 
-                                 ?? (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
-
-            if (updatedStudent != null)
+            try 
             {
-                string highestCompletedKey = definitions.First().Key; // default to first
+                await _studentService.ToggleWorkflowStepAsync(Student.Id, item.Key, item.IsCompleted);
+                
+                var definitions = GetWorkflowDefinitions(Student.Type);
+                
+                var updatedStudent = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id) 
+                                     ?? (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
 
-                foreach (var def in definitions)
+                if (updatedStudent != null)
                 {
-                    var step = updatedStudent.WorkflowSteps.FirstOrDefault(w => w.StepKey == def.Key);
-                    if (step != null && step.Completed)
+                    string highestCompletedKey = definitions.First().Key;
+
+                    foreach (var def in definitions)
                     {
-                        highestCompletedKey = def.Key; // keeps overwriting until the last completed one is found
+                        var step = updatedStudent.WorkflowSteps.FirstOrDefault(w => w.StepKey == def.Key);
+                        if (step != null && step.Completed)
+                        {
+                            highestCompletedKey = def.Key;
+                        }
                     }
-                }
 
-                if (Student.Status != highestCompletedKey)
-                {
-                    Student.Status = highestCompletedKey;
-                    await _studentService.UpdateStudentAsync(Student);
-                }
+                    if (Student.Status != highestCompletedKey)
+                    {
+                        Student.Status = highestCompletedKey;
+                        await _studentService.UpdateStudentAsync(Student);
+                    }
 
-                Student = updatedStudent; // refresh UI completely
+                    Student = updatedStudent;
+                }
+            } 
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Fout bij updaten workflow: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
         
@@ -240,19 +248,26 @@ namespace StageManagementSystem.ViewModels
         {
             if (Student == null || string.IsNullOrWhiteSpace(NewContactContent)) return;
 
-            var contact = new Contact
+            try 
             {
-                StudentId = Student.Id,
-                Type = NewContactType,
-                Content = NewContactContent,
-                Date = NewContactDate
-            };
+                var contact = new Contact
+                {
+                    StudentId = Student.Id,
+                    Type = NewContactType,
+                    Content = NewContactContent,
+                    Date = NewContactDate
+                };
 
-            await _studentService.AddContactAsync(contact);
-            
-            Contacts.Insert(0, contact);
-            NewContactContent = ""; // Reset
-            NewContactDate = DateTime.Today;
+                await _studentService.AddContactAsync(contact);
+                
+                Contacts.Insert(0, contact);
+                NewContactContent = ""; // Reset
+                NewContactDate = DateTime.Today;
+            } 
+            catch (Exception ex) 
+            {
+                System.Windows.MessageBox.Show($"Fout bij contactmoment toevoegen: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
 
         [RelayCommand]
@@ -301,20 +316,26 @@ namespace StageManagementSystem.ViewModels
         {
             if (Student == null) return;
             
-            // Use OpenFileDialog
-            var dialog = new Microsoft.Win32.OpenFileDialog();
-            if (dialog.ShowDialog() == true)
+            try 
             {
-                var file = new Attachment
+                var dialog = new Microsoft.Win32.OpenFileDialog();
+                if (dialog.ShowDialog() == true)
                 {
-                    StudentId = Student.Id,
-                    FileName = System.IO.Path.GetFileName(dialog.FileName),
-                    FilePath = dialog.FileName, // In a real app, copy this to local storage
-                    UploadDate = DateTime.Now
-                };
-                
-                await _studentService.AddAttachmentAsync(file);
-                Attachments.Insert(0, file);
+                    var file = new Attachment
+                    {
+                        StudentId = Student.Id,
+                        FileName = System.IO.Path.GetFileName(dialog.FileName),
+                        FilePath = dialog.FileName, // In a real app, copy this to local storage
+                        UploadDate = DateTime.Now
+                    };
+                    
+                    await _studentService.AddAttachmentAsync(file);
+                    Attachments.Insert(0, file);
+                }
+            } 
+            catch (Exception ex) 
+            {
+                System.Windows.MessageBox.Show($"Fout bij toevoegen bestand: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 

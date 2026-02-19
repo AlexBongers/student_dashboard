@@ -113,7 +113,14 @@ namespace StageManagementSystem.ViewModels
                 ProfilePicturePath = ProfilePicturePath
             };
 
-            await _studentService.AddStudentAsync(student);
+            try 
+            {
+                await _studentService.AddStudentAsync(student);
+            } 
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Fout bij aanmaken nieuwe student: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
     }
 }
