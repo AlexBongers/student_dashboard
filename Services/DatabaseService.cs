@@ -90,6 +90,30 @@ namespace StageManagementSystem.Services
 
             context.Students.AddRange(students);
             context.SaveChanges();
+
+            // Auto-generate workflow steps based on Status
+            var workflowKeys = new[] { "opstart", "pva", "concept1", "concept2", "definitief", "herkansing", "afgerond" };
+            
+            foreach (var student in students)
+            {
+                // Find index of current status
+                int statusIndex = Array.IndexOf(workflowKeys, student.Status);
+                if (statusIndex >= 0)
+                {
+                    // Mark all steps up to and including current status as completed
+                    for (int i = 0; i <= statusIndex; i++)
+                    {
+                         context.WorkflowSteps.Add(new WorkflowStep 
+                         { 
+                             StudentId = student.Id, 
+                             StepKey = workflowKeys[i], 
+                             Completed = true, 
+                             CompletedDate = DateTime.Now // Approximate
+                         });
+                    }
+                }
+            }
+            context.SaveChanges();
         }
     }
 }

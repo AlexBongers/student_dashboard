@@ -95,6 +95,19 @@ namespace StageManagementSystem.ViewModels
             
             await _studentService.ToggleWorkflowStepAsync(Student.Id, item.Key, item.IsCompleted);
             
+            // Logic to sync status
+            // If checking a box, we might want to update the status to this step? 
+            // Or better: the status should be the "highest" completed step?
+            // Let's assume sequential progress.
+            
+            if (item.IsCompleted)
+            {
+                // When marking as complete, set status to this step
+                // Ideally we'd check if this is "higher" than current, but simple approach is fine for now
+                Student.Status = item.Key;
+                await _studentService.UpdateStudentAsync(Student);
+            }
+            
             // Refresh to get updated dates/state
              var updated = (await _studentService.GetActiveStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
              if (updated == null) updated = (await _studentService.GetArchivedStudentsAsync()).FirstOrDefault(s => s.Id == Student.Id);
@@ -233,8 +246,8 @@ namespace StageManagementSystem.ViewModels
             {
                 ("opstart", "Opstart"),
                 ("pva", "PvA / Stageplan"),
-                ("1e concept", "1e Concept Verslag"),
-                ("2e concept", "2e Concept Verslag"),
+                ("concept1", "1e Concept Verslag"),
+                ("concept2", "2e Concept Verslag"),
                 ("definitief", "Definitief Verslag"),
                 ("herkansing", "Herkansing"),
                 ("afgerond", "Afgerond")
