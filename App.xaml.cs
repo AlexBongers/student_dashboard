@@ -9,7 +9,7 @@ namespace StageManagementSystem
     public partial class App : Application
     {
         public new static App Current => (App)Application.Current;
-        public IServiceProvider Services { get; }
+        public IServiceProvider Services { get; private set; } = null!;
 
         public App()
         {
