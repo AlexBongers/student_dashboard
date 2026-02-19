@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using StageManagementSystem.Data;
 using StageManagementSystem.Models;
 using System;
@@ -11,6 +12,20 @@ namespace StageManagementSystem.Services
         {
             using var context = new AppDbContext();
             context.Database.EnsureCreated();
+
+            // Patch existing database schema to include ProfilePicturePath if it's missing.
+            try
+            {
+                using var command = context.Database.GetDbConnection().CreateCommand();
+                command.CommandText = "ALTER TABLE Students ADD COLUMN ProfilePicturePath TEXT;";
+                context.Database.OpenConnection();
+                command.ExecuteNonQuery();
+                context.Database.CloseConnection();
+            }
+            catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 1) // 1 = SQLITE_ERROR, typically "duplicate column name"
+            {
+                // Column already exists, swallow exception.
+            }
 
             if (!context.Students.Any())
             {

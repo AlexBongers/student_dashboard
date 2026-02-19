@@ -97,7 +97,41 @@
                             
                             <!-- Avatar / Initials -->
                             <Border Width="40" Height="40" CornerRadius="20" Background="{DynamicResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
-                                <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+                                <Grid>
+                                    <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProfilePicturePath}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ProfilePicturePath}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <Border CornerRadius="20" Width="40" Height="40">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill"/>
+                                        </Border.Background>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ProfilePicturePath}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ProfilePicturePath}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                </Grid>
                             </Border>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">

@@ -49,10 +49,50 @@
                 <!-- Header -->
                 <Grid Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel>
+                    
+                    <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource Gray100}" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <Grid>
+                            <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="{DynamicResource Gray400}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Student.ProfilePicturePath}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Student.ProfilePicturePath}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Border CornerRadius="40" Width="80" Height="80">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Student.ProfilePicturePath}" Stretch="UniformToFill"/>
+                                </Border.Background>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Student.ProfilePicturePath}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Student.ProfilePicturePath}" Value="">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Gray800}"/>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Student.StudentNumber}" Foreground="{DynamicResource Gray600}"/>

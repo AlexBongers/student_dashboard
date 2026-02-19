@@ -45,6 +45,8 @@ namespace StageManagementSystem.Models
         
         public DateTime? ArchivedAt { get; set; }
         
+        public string? ProfilePicturePath { get; set; }
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();

@@ -16,7 +16,51 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="➕ Nieuwe Student Toevoegen" FontSize="20" FontWeight="Bold" Margin="0,0,0,20"/>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="➕ Nieuwe Student Toevoegen" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Command="{Binding SelectProfilePictureCommand}" Width="64" Height="64" Style="{StaticResource BtnSecondary}" Padding="0" ToolTip="Kies Profielfoto" Background="Transparent" BorderThickness="0">
+                    <Grid>
+                        <Border CornerRadius="32" Width="64" Height="64" Background="{DynamicResource Gray200}" BorderBrush="{DynamicResource Gray300}" BorderThickness="1"/>
+                        <TextBlock Text="📷" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProfilePicturePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ProfilePicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Border CornerRadius="32" Width="64" Height="64">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding ProfilePicturePath}" Stretch="UniformToFill"/>
+                            </Border.Background>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ProfilePicturePath}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ProfilePicturePath}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                    </Grid>
+                </Button>
+            </Grid>
 
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,10,0">
                 <StackPanel>
