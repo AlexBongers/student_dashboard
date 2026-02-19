@@ -1,0 +1,318 @@
+<UserControl x:Class="StageManagementSystem.Views.StudentDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StageManagementSystem.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="600">
+    <Border Style="{StaticResource CardStyle}">
+        <Grid>
+            <!-- Empty State -->
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Student}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock Text="👈" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <TextBlock Text="Selecteer een student" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Klik op een student in de lijst om details te bekijken" Foreground="{StaticResource Gray600}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Content -->
+            <Grid>
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Student}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <Grid Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource Gray800}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Student.StudentNumber}" Foreground="{StaticResource Gray600}"/>
+                            <TextBlock Text=" • " Foreground="{StaticResource Gray600}"/>
+                            <TextBlock Text="{Binding Student.Type}" Foreground="{StaticResource Gray600}"/>
+                            <TextBlock Text=" • " Foreground="{StaticResource Gray600}"/>
+                            <TextBlock Text="{Binding Student.MyRole}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                             <TextBlock Text="📧 "/>
+                             <TextBlock Text="{Binding Student.Email}" Foreground="{StaticResource Gray600}" Margin="0,0,10,0"/>
+                             <TextBlock Text="📞 "/>
+                             <TextBlock Text="{Binding Student.Phone}" Foreground="{StaticResource Gray600}"/>
+                         </StackPanel>
+                    </StackPanel>
+                    <!-- Status Dropdown or Pill -->
+                    <Border Grid.Column="1" Background="{StaticResource PrimaryColor}" CornerRadius="12" Padding="12,6" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding Student.Status}" Foreground="White" FontWeight="Bold" FontSize="12"/>
+                    </Border>
+                </Grid>
+
+                <!-- Tabs -->
+                <TabControl Grid.Row="2" BorderThickness="0" Background="Transparent" Padding="0">
+                    <TabControl.Resources>
+                        <Style TargetType="TabItem">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabItem">
+                                        <Border Name="Border" BorderThickness="0,0,0,2" BorderBrush="Transparent" Padding="12,8" Margin="0,0,4,0">
+                                            <ContentPresenter x:Name="ContentSite"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                ContentSource="Header"
+                                                RecognizesAccessKey="True"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                                <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter Property="Foreground" Value="{StaticResource Gray600}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+
+                    <TabItem Header="Overzicht">
+                        <ScrollViewer>
+                            <StackPanel Margin="0,16,0,0">
+                                <WrapPanel>
+                                    <local:InfoBox Label="Bedrijf" Value="{Binding Student.Company}"/>
+                                    <local:InfoBox Label="Locatie" Value="{Binding Student.Location}"/>
+                                    <local:InfoBox Label="Startdatum" Value="{Binding Student.StartDate, StringFormat=d}"/>
+                                    <local:InfoBox Label="Einddatum" Value="{Binding Student.EndDate, StringFormat=d}"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Workflow">
+                        <ScrollViewer>
+                             <ItemsControl ItemsSource="{Binding WorkflowSteps}" Margin="0,16,0,0">
+                                 <ItemsControl.ItemTemplate>
+                                     <DataTemplate>
+                                         <Border Background="{StaticResource Gray50}" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                             <Grid>
+                                                 <Grid.ColumnDefinitions>
+                                                     <ColumnDefinition Width="Auto"/>
+                                                     <ColumnDefinition Width="*"/>
+                                                     <ColumnDefinition Width="Auto"/>
+                                                 </Grid.ColumnDefinitions>
+                                                 <CheckBox IsChecked="{Binding IsCompleted}" VerticalAlignment="Center" 
+                                                           Command="{Binding DataContext.ToggleWorkflowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                           CommandParameter="{Binding}"/>
+                                                 <TextBlock Grid.Column="1" Text="{Binding Label}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                                                 <TextBlock Grid.Column="2" 
+                                                            Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                            Foreground="{StaticResource SuccessColor}" FontSize="12" VerticalAlignment="Center">
+                                                     <Run Text="✓ "/>
+                                                     <Run Text="{Binding Date, StringFormat=d}"/>
+                                                 </TextBlock>
+                                             </Grid>
+                                         </Border>
+                                     </DataTemplate>
+                                 </ItemsControl.ItemTemplate>
+                             </ItemsControl>
+                        </ScrollViewer>
+                    </TabItem>
+                    
+                    <TabItem Header="Deadlines">
+                        <Grid Margin="0,16,0,0">
+                             <Grid.RowDefinitions>
+                                 <RowDefinition Height="Auto"/>
+                                 <RowDefinition Height="*"/>
+                             </Grid.RowDefinitions>
+                             
+                             <!-- Add Deadline -->
+                             <Border Background="{StaticResource Gray50}" Padding="10" CornerRadius="8" Margin="0,0,0,16">
+                                 <Grid>
+                                     <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*"/>
+                                         <ColumnDefinition Width="Auto"/>
+                                         <ColumnDefinition Width="Auto"/>
+                                     </Grid.ColumnDefinitions>
+                                     <TextBox Text="{Binding NewDeadlineTitle}" Padding="6" Margin="0,0,8,0"/>
+                                     <DatePicker Grid.Column="1" SelectedDate="{Binding NewDeadlineDate}" Margin="0,0,8,0"/>
+                                     <Button Grid.Column="2" Content="Toevoegen" Command="{Binding AddDeadlineCommand}" Style="{StaticResource BtnPrimary}"/>
+                                 </Grid>
+                             </Border>
+                             
+                             <ScrollViewer Grid.Row="1">
+                                 <ItemsControl ItemsSource="{Binding Deadlines}">
+                                     <ItemsControl.ItemTemplate>
+                                         <DataTemplate>
+                                             <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
+                                                 <Grid>
+                                                     <Grid.ColumnDefinitions>
+                                                         <ColumnDefinition Width="Auto"/> <!-- Checkbox -->
+                                                         <ColumnDefinition Width="*"/>    <!-- Title -->
+                                                         <ColumnDefinition Width="Auto"/> <!-- Date -->
+                                                         <ColumnDefinition Width="Auto"/> <!-- Delete -->
+                                                     </Grid.ColumnDefinitions>
+                                                     
+                                                     <CheckBox IsChecked="{Binding IsCompleted}" VerticalAlignment="Center"
+                                                               Command="{Binding DataContext.ToggleDeadlineCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                               CommandParameter="{Binding}"/>
+                                                               
+                                                     <TextBlock Grid.Column="1" Text="{Binding Title}" VerticalAlignment="Center" Margin="12,0,0,0"
+                                                                TextDecorations="{Binding IsCompleted, Converter={StaticResource BooleanToTextDecorationsConverter}}"/> <!-- Need converter or style -->
+                                                                
+                                                     <TextBlock Grid.Column="2" Text="{Binding DueDate, StringFormat=d}" VerticalAlignment="Center" Foreground="{StaticResource Gray600}" Margin="12,0,12,0"/>
+                                                     
+                                                     <Button Grid.Column="3" Content="🗑️" Background="Transparent" BorderThickness="0" 
+                                                             Command="{Binding DataContext.DeleteDeadlineCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                             CommandParameter="{Binding}"/>
+                                                 </Grid>
+                                             </Border>
+                                         </DataTemplate>
+                                     </ItemsControl.ItemTemplate>
+                                 </ItemsControl>
+                             </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Contact">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <ScrollViewer Margin="0,16,0,16">
+                                <ItemsControl ItemsSource="{Binding Contacts}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,10" Padding="0">
+                                                <Grid>
+                                                    <Rectangle HorizontalAlignment="Left" Width="3" Fill="#3b82f6" RadiusX="2" RadiusY="2" Margin="0,1,0,1"/>
+                                                    <StackPanel Margin="15,12,12,12">
+                                                        <Grid Margin="0,0,0,4">
+                                                            <TextBlock Text="{Binding Type}" FontWeight="Bold" Foreground="{StaticResource InfoColor}"/>
+                                                            <TextBlock Text="{Binding Date, StringFormat=d}" HorizontalAlignment="Right" Foreground="{StaticResource Gray600}" FontSize="12"/>
+                                                        </Grid>
+                                                        <TextBlock Text="{Binding Content}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+
+                            <Border Grid.Row="1" Background="{StaticResource Gray50}" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="Nieuw contactmoment" FontWeight="Bold" Margin="0,0,0,8"/>
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <DatePicker SelectedDate="{Binding NewContactDate}" Margin="0,0,4,0"/>
+                                        <!-- Simple ComboBox for types -->
+                                        <ComboBox SelectedValue="{Binding NewContactType}" SelectedValuePath="Content" Grid.Column="1" Margin="4,0,0,0">
+                                            <ComboBoxItem Content="Email"/>
+                                            <ComboBoxItem Content="Telefoon"/>
+                                            <ComboBoxItem Content="Gesprek"/>
+                                            <ComboBoxItem Content="Review"/>
+                                        </ComboBox>
+                                    </Grid>
+                                    <TextBox Text="{Binding NewContactContent}" Height="60" TextWrapping="Wrap" AcceptsReturn="True" Margin="0,0,0,8" Padding="4"/>
+                                    <Button Content="Toevoegen" Command="{Binding AddContactCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+                    
+                    <TabItem Header="Bestanden">
+                        <Grid Margin="0,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Button Content="📂 Bestand Toevoegen" Command="{Binding AddFileCommand}" Style="{StaticResource BtnSecondary}" HorizontalAlignment="Left" Margin="0,0,0,16"/>
+                            
+                            <ScrollViewer Grid.Row="1">
+                                <ItemsControl ItemsSource="{Binding Attachments}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                             <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="0,0,0,1" Padding="12">
+                                                 <Grid>
+                                                     <Grid.ColumnDefinitions>
+                                                         <ColumnDefinition Width="Auto"/> <!-- Icon -->
+                                                         <ColumnDefinition Width="*"/>    <!-- Name -->
+                                                         <ColumnDefinition Width="Auto"/> <!-- Actions -->
+                                                     </Grid.ColumnDefinitions>
+                                                     
+                                                     <TextBlock Text="📄" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                     
+                                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                         <TextBlock Text="{Binding FileName}" FontWeight="SemiBold"/>
+                                                         <TextBlock Text="{Binding UploadDate, StringFormat=g}" FontSize="12" Foreground="{StaticResource Gray600}"/>
+                                                     </StackPanel>
+                                                     
+                                                     <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                         <Button Content="Openen" Style="{StaticResource BtnSecondary}" Padding="8,4" Margin="0,0,8,0"
+                                                                 Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                 CommandParameter="{Binding}"/>
+                                                         <Button Content="🗑️" Background="Transparent" BorderThickness="0"
+                                                                 Command="{Binding DataContext.DeleteFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                 CommandParameter="{Binding}"/>
+                                                     </StackPanel>
+                                                 </Grid>
+                                             </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Notities">
+                        <Grid Margin="0,16,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBox Text="{Binding Student.Notes}" AcceptsReturn="True" TextWrapping="Wrap" 
+                                     BorderThickness="1" BorderBrush="{StaticResource Gray200}" Padding="10" 
+                                     VerticalScrollBarVisibility="Auto"/>
+                            <Button Grid.Row="1" Content="Opslaan" Command="{Binding SaveNotesCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

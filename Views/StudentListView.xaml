@@ -1,0 +1,118 @@
+<UserControl x:Class="StageManagementSystem.Views.StudentListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:StageManagementSystem.Views"
+             xmlns:helpers="clr-namespace:StageManagementSystem.Helpers"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400">
+    <Border Style="{StaticResource CardStyle}" Padding="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border BorderBrush="{StaticResource Gray100}" BorderThickness="0,0,0,1" Padding="20,16">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="👥 Studenten" FontSize="18" FontWeight="Bold"/>
+                    <TextBlock Foreground="{StaticResource Gray600}" VerticalAlignment="Center" Margin="5,0,0,0">
+                        <Run Text="("/>
+                        <Run Text="{Binding Students.Count, Mode=OneWay}"/>
+                        <Run Text=")"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Filters -->
+            <Border Grid.Row="1" Padding="16,0,16,16">
+                <StackPanel>
+                    <Border Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,12" Padding="8,4">
+                         <Grid>
+                             <Grid.ColumnDefinitions>
+                                 <ColumnDefinition Width="Auto"/>
+                                 <ColumnDefinition Width="*"/>
+                             </Grid.ColumnDefinitions>
+                             <TextBlock Text="🔍" Margin="4,0,8,0" VerticalAlignment="Center" Foreground="{StaticResource Gray600}"/>
+                             <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                                      Grid.Column="1" BorderThickness="0" Background="Transparent" 
+                                      VerticalContentAlignment="Center" helpers:Placeholders.Text="Zoeken..."/>
+                         </Grid>
+                    </Border>
+                    
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Alle" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=all}" 
+                                     Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
+                        <RadioButton Content="Stage" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=stage}" 
+                                     Style="{StaticResource TabButtonStyle}" Margin="0,0,8,0"/>
+                        <RadioButton Content="Afstudeer" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=scriptie}" 
+                                     Style="{StaticResource TabButtonStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- List -->
+            <ListBox Grid.Row="2" ItemsSource="{Binding Students}" SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" 
+                     BorderThickness="0" Background="Transparent" Padding="16,0,16,16"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Margin" Value="0,0,0,8"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border x:Name="Bd" Background="White" BorderBrush="{StaticResource Gray200}" BorderThickness="1" CornerRadius="12" Padding="12">
+                                        <ContentPresenter/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                            <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                            <Setter TargetName="Bd" Property="Background" Value="#F5F3FF"/> <!-- Light Indigo -->
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Avatar / Initials -->
+                            <Border Width="40" Height="40" CornerRadius="20" Background="{StaticResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
+                                <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{StaticResource Gray800}" FontSize="14"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                    <TextBlock Text="{Binding Company}" Foreground="{StaticResource Gray600}" FontSize="12" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
+                                </StackPanel>
+                            </StackPanel>
+                            
+                            <!-- Pill -->
+                            <Border Grid.Column="2" Background="{StaticResource Gray100}" CornerRadius="4" Padding="6,2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" Foreground="{StaticResource Gray600}"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</UserControl>
