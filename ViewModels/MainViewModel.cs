@@ -23,6 +23,11 @@ namespace StageManagementSystem.ViewModels
         [ObservableProperty] private int _inReviewCount;
         [ObservableProperty] private int _activeCount;
         [ObservableProperty] private int _completedMonthCount;
+        
+        // Chart Data
+        [ObservableProperty] private System.Collections.ObjectModel.ObservableCollection<ChartItem>? _statusDistribution;
+
+        public record ChartItem(string Label, int Value, double Percentage, string ColorResource);
 
         public MainViewModel(StudentService studentService)
         {
@@ -144,6 +149,48 @@ namespace StageManagementSystem.ViewModels
              // For simplicity, defining "Completed this month" as archived this month or end date this month
              var now = DateTime.Now;
              CompletedMonthCount = archived.Count(s => (s.ArchivedAt.HasValue && s.ArchivedAt.Value.Month == now.Month && s.ArchivedAt.Value.Year == now.Year));
+
+             // Populate Status Distribution Chart
+             var allStudents = students.Concat(archived).ToList();
+             if (allStudents.Any())
+             {
+                 var groups = allStudents.GroupBy(s => s.Status)
+                                         .OrderByDescending(g => g.Count())
+                                         .ToList();
+
+                 var chartData = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+                 
+                 // Map statuses to theme colors
+                 string GetColorForStatus(string status) => status switch
+                 {
+                     "opstart" => "InfoColor",
+                     "pva" => "WarningColor",
+                     "concept1" => "PrimaryColor",
+                     "concept2" => "PrimaryColor",
+                     "eindversie" => "SuccessColor",
+                     "definitief" => "SuccessColor",
+                     "afgerond" => "SuccessColor",
+                     "herkansing" => "DangerColor",
+                     _ => "Gray400"
+                 };
+
+                 foreach (var group in groups)
+                 {
+                     double pct = (double)group.Count() / allStudents.Count;
+                     chartData.Add(new ChartItem(
+                         group.Key.ToUpper(),
+                         group.Count(),
+                         pct, // 0.0 to 1.0
+                         GetColorForStatus(group.Key)
+                     ));
+                 }
+                 
+                 StatusDistribution = chartData;
+             }
+             else
+             {
+                 StatusDistribution = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
+             }
         }
 
         [RelayCommand]
