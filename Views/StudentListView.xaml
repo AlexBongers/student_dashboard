@@ -18,7 +18,10 @@
             <!-- Header -->
             <Border BorderBrush="{DynamicResource Gray100}" BorderThickness="0,0,0,1" Padding="20,16">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="👥 Studenten" FontSize="18" FontWeight="Bold"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="&#xE716;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="18" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Studenten" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </StackPanel>
                     <TextBlock Foreground="{DynamicResource Gray600}" VerticalAlignment="Center" Margin="5,0,0,0">
                         <Run Text="("/>
                         <Run Text="{Binding Students.Count, Mode=OneWay}"/>
@@ -36,7 +39,7 @@
                                  <ColumnDefinition Width="Auto"/>
                                  <ColumnDefinition Width="*"/>
                              </Grid.ColumnDefinitions>
-                             <TextBlock Text="🔍" Margin="4,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}"/>
+                             <TextBlock Text="&#xE721;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Margin="4,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}"/>
                              <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
                                       Grid.Column="1" BorderThickness="0" Background="Transparent" 
                                       VerticalContentAlignment="Center" helpers:Placeholders.Text="Zoeken..."/>
@@ -58,7 +61,12 @@
                             <RadioButton Content="Afstudeer" GroupName="Filter" IsChecked="{Binding FilterType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=scriptie}" 
                                          Style="{StaticResource TabButtonStyle}"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="📦 Archiveren" Command="{Binding BulkArchiveCommand}" Style="{StaticResource BtnSecondary}" Padding="12,4" ToolTip="Archiveer geselecteerde studenten"/>
+                        <Button Grid.Column="1" Command="{Binding BulkArchiveCommand}" Style="{StaticResource BtnSecondary}" Padding="12,4" ToolTip="Archiveer geselecteerde studenten">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7B8;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Archiveren" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
                 </StackPanel>
             </Border>
@@ -109,7 +117,7 @@
                             <!-- Avatar / Initials -->
                             <Border Grid.Column="1" Width="40" Height="40" CornerRadius="20" Background="{DynamicResource Gray100}" Margin="0,0,12,0" VerticalAlignment="Center">
                                 <Grid>
-                                    <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">
+                                    <TextBlock Text="&#xE77B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Visibility" Value="Collapsed"/>
@@ -154,7 +162,7 @@
                             
                             <!-- Pill & Warning Badge -->
                             <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="⚠️" Foreground="{DynamicResource DangerColor}" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="Urgent of Verlopen Deadline!">
+                                <TextBlock Text="&#xE7BA;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource DangerColor}" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="Urgent of Verlopen Deadline!">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Visibility" Value="Collapsed"/>

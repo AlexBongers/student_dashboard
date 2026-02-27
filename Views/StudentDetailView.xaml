@@ -22,7 +22,7 @@
                     </Style>
                 </Grid.Style>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="👈" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <TextBlock Text="&#xE72B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                     <TextBlock Text="Selecteer een student" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <TextBlock Text="Klik op een student in de lijst om details te bekijken" Foreground="{DynamicResource Gray600}" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -57,7 +57,7 @@
                     
                     <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource Gray100}" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <Grid>
-                            <TextBlock Text="👤" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="{DynamicResource Gray400}">
+                            <TextBlock Text="&#xE77B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="{DynamicResource Gray400}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -103,12 +103,12 @@
                             <TextBlock Text="{Binding Student.MyRole}" Foreground="{DynamicResource PrimaryColor}" FontWeight="SemiBold"/>
                         </StackPanel>
                          <StackPanel Orientation="Horizontal" Margin="0,4,0,0" VerticalAlignment="Center">
-                             <TextBlock Text="📧 " VerticalAlignment="Center"/>
+                             <TextBlock Text="&#xE715;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,8,0"/>
                              <TextBlock Text="{Binding Student.Email}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                              
                              <Button Content="Stuur Email" Command="{Binding SendEmailCommand}" Style="{StaticResource BtnSecondary}" Padding="8,2" Margin="0,0,16,0" FontSize="10" ToolTip="Start nieuw bericht in standaard e-mailapp"/>
 
-                             <TextBlock Text="📞 " VerticalAlignment="Center"/>
+                             <TextBlock Text="&#xE717;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,8,0"/>
                              <TextBlock Text="{Binding Student.Phone}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center"/>
                          </StackPanel>
                     </StackPanel>
@@ -239,9 +239,11 @@
                                                                 
                                                      <TextBlock Grid.Column="2" Text="{Binding DueDate, StringFormat=d}" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}" Margin="12,0,12,0"/>
                                                      
-                                                     <Button Grid.Column="3" Content="🗑️" Background="Transparent" BorderThickness="0" 
+                                                     <Button Grid.Column="3" Background="Transparent" BorderThickness="0" 
                                                              Command="{Binding DataContext.DeleteDeadlineCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                             CommandParameter="{Binding}"/>
+                                                             CommandParameter="{Binding}">
+                                                         <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource DangerColor}"/>
+                                                     </Button>
                                                  </Grid>
                                              </Border>
                                          </DataTemplate>
@@ -324,7 +326,7 @@
                                                          <ColumnDefinition Width="Auto"/> <!-- Actions -->
                                                      </Grid.ColumnDefinitions>
                                                      
-                                                     <TextBlock Text="📄" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                                     <TextBlock Text="&#xE8A5;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center" Margin="0,0,12,0"/>
                                                      
                                                      <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                          <TextBlock Text="{Binding FileName}" FontWeight="SemiBold"/>
@@ -335,9 +337,11 @@
                                                          <Button Content="Openen" Style="{StaticResource BtnSecondary}" Padding="8,4" Margin="0,0,8,0"
                                                                  Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                                  CommandParameter="{Binding}"/>
-                                                         <Button Content="🗑️" Background="Transparent" BorderThickness="0"
+                                                         <Button Background="Transparent" BorderThickness="0"
                                                                  Command="{Binding DataContext.DeleteFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                                 CommandParameter="{Binding}"/>
+                                                                 CommandParameter="{Binding}">
+                                                             <TextBlock Text="&#xE74D;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource DangerColor}"/>
+                                                         </Button>
                                                      </StackPanel>
                                                  </Grid>
                                              </Border>

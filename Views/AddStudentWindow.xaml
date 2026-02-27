@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="Nieuwe Student Toevoegen" Height="650" Width="600"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        UseLayoutRounding="True" SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType"
         Background="{DynamicResource Gray50}">
     <Border Padding="20">
         <Grid>
@@ -21,11 +23,14 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="➕ Nieuwe Student Toevoegen" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="&#xE710;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="20" FontWeight="Bold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Nieuwe Student Toevoegen" FontSize="20" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
                 <Button Grid.Column="1" Command="{Binding SelectProfilePictureCommand}" Width="64" Height="64" Style="{StaticResource BtnSecondary}" Padding="0" ToolTip="Kies Profielfoto" Background="Transparent" BorderThickness="0">
                     <Grid>
                         <Border CornerRadius="32" Width="64" Height="64" Background="{DynamicResource Gray200}" BorderBrush="{DynamicResource Gray300}" BorderThickness="1"/>
-                        <TextBlock Text="📷" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}">
+                        <TextBlock Text="&#xE114;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource Gray600}">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed"/>

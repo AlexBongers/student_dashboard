@@ -39,7 +39,7 @@ public partial class MainWindow : Window
         
         if (sender is Button btn)
         {
-            btn.Content = _isDarkTheme ? "☀️" : "🌙";
+            btn.Content = _isDarkTheme ? "\uE706" : "\uE708";
             btn.ToolTip = _isDarkTheme ? "Toggle Light Mode" : "Toggle Dark Mode";
         }
     }
