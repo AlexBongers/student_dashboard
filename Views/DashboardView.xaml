@@ -27,113 +27,97 @@
             </Style>
         </Grid.Resources>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="1.5*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- Danger Card -->
-        <Button Grid.Column="0" Command="{Binding FilterNeedsActionCommand}" Style="{StaticResource TileButtonStyle}" ToolTip="Toon studenten die > 14 dagen geen contact hebben gehad">
-            <Border Style="{StaticResource CardStyle}" Padding="10">
-                <DockPanel>
-                    <Rectangle Width="3" Fill="{DynamicResource DangerColor}" DockPanel.Dock="Left" Margin="-10,-10,8,-10"/>
-                    <StackPanel>
-                        <TextBlock Text="ACTIE VEREIST" Foreground="{DynamicResource Gray600}" FontSize="10" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding NeedsActionCount}" Foreground="{DynamicResource Gray800}" FontSize="24" FontWeight="Bold"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-        </Button>
-
-        <!-- Warning Card -->
-        <Button Grid.Column="1" Command="{Binding FilterInReviewCommand}" Style="{StaticResource TileButtonStyle}">
-            <Border Style="{StaticResource CardStyle}" Padding="10">
-                <DockPanel>
-                    <Rectangle Width="3" Fill="{DynamicResource WarningColor}" DockPanel.Dock="Left" Margin="-10,-10,8,-10"/>
-                    <StackPanel>
-                        <TextBlock Text="IN REVIEW" Foreground="{DynamicResource Gray600}" FontSize="10" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding InReviewCount}" Foreground="{DynamicResource Gray800}" FontSize="24" FontWeight="Bold"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-        </Button>
-
-        <!-- Info Card -->
-        <Button Grid.Column="2" Command="{Binding FilterActiveCommand}" Style="{StaticResource TileButtonStyle}">
-            <Border Style="{StaticResource CardStyle}" Padding="10">
-                <DockPanel>
-                    <Rectangle Width="3" Fill="{DynamicResource InfoColor}" DockPanel.Dock="Left" Margin="-10,-10,8,-10"/>
-                    <StackPanel>
-                        <TextBlock Text="ACTIEF" Foreground="{DynamicResource Gray600}" FontSize="10" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding ActiveCount}" Foreground="{DynamicResource Gray800}" FontSize="24" FontWeight="Bold"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-        </Button>
-
-        <!-- Success Card -->
-        <Button Grid.Column="3" Command="{Binding FilterCompletedCommand}" Style="{StaticResource TileButtonStyle}">
-            <Border Style="{StaticResource CardStyle}" Padding="10">
-                <DockPanel>
-                    <Rectangle Width="3" Fill="{DynamicResource SuccessColor}" DockPanel.Dock="Left" Margin="-10,-10,8,-10"/>
-                    <StackPanel>
-                        <TextBlock Text="AFGEROND" Foreground="{DynamicResource Gray600}" FontSize="10" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding CompletedMonthCount}" Foreground="{DynamicResource Gray800}" FontSize="24" FontWeight="Bold"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-        </Button>
-
-        <!-- Status Distribution Chart (Compact) -->
-        <Border Grid.Column="4" Style="{StaticResource CardStyle}" Margin="5,0,0,0" Padding="10">
-            <StackPanel>
-                <TextBlock Text="Statusverdeling" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource Gray800}" Margin="0,0,0,8"/>
+        <!-- Action Center / Alerts -->
+        <Border Style="{StaticResource CardStyle}" Margin="0" Padding="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
                 
-                <ItemsControl ItemsSource="{Binding StatusDistribution}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{DynamicResource Gray100}" CornerRadius="4" Margin="0,0,8,8" Padding="6,2" ToolTip="{Binding Value}">
-                                <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="8" Height="8" Margin="0,0,4,0">
-                                        <Ellipse.Style>
-                                            <Style TargetType="Ellipse">
-                                                <Setter Property="Fill" Value="{DynamicResource PrimaryColor}"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ColorResource}" Value="InfoColor">
-                                                        <Setter Property="Fill" Value="{DynamicResource InfoColor}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ColorResource}" Value="WarningColor">
-                                                        <Setter Property="Fill" Value="{DynamicResource WarningColor}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ColorResource}" Value="SuccessColor">
-                                                        <Setter Property="Fill" Value="{DynamicResource SuccessColor}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ColorResource}" Value="DangerColor">
-                                                        <Setter Property="Fill" Value="{DynamicResource DangerColor}"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding ColorResource}" Value="Gray400">
-                                                        <Setter Property="Fill" Value="{DynamicResource Gray400}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Ellipse.Style>
-                                    </Ellipse>
-                                    <TextBlock Text="{Binding Label}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}"/>
-                                    <TextBlock Text="{Binding Value, StringFormat=' ({0})'}" FontSize="10" Foreground="{DynamicResource Gray500}"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                    <TextBlock Text="&#xE7BA;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="18" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBlock Text="Actiecentrum" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource Gray800}" VerticalAlignment="Center"/>
+                    
+                    <Border Background="{DynamicResource DangerColor}" CornerRadius="10" Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center"
+                            Visibility="{Binding Alerts.Count, Converter={StaticResource IntToVisibilityConverter}}">
+                        <TextBlock Text="{Binding Alerts.Count}" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                    </Border>
+                </StackPanel>
+
+                <!-- Empty State -->
+                <TextBlock Grid.Row="1" Text="Geen acties vereist op dit moment. Je bent helemaal bij!" 
+                           Foreground="{DynamicResource Gray500}" FontStyle="Italic"
+                           Visibility="{Binding Alerts.Count, Converter={StaticResource InverseIntToVisibilityConverter}}"/>
+
+                <!-- Alerts List -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Alerts}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Command="{Binding DataContext.OpenStudentFromAlertCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource TileButtonStyle}">
+                                    <Border Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <Border Width="36" Height="36" CornerRadius="18" Background="{DynamicResource SurfaceBrush}" BorderThickness="1" Margin="0,0,15,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ColorResource}" Value="DangerColor">
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource DangerColor}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ColorResource}" Value="WarningColor">
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource WarningColor}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding ColorResource}" Value="InfoColor">
+                                                                <Setter Property="BorderBrush" Value="{DynamicResource InfoColor}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                
+                                                <TextBlock Text="{Binding Icon}" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ColorResource}" Value="DangerColor">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource DangerColor}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ColorResource}" Value="WarningColor">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource WarningColor}"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ColorResource}" Value="InfoColor">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource InfoColor}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                            
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Message}" FontWeight="SemiBold" Foreground="{DynamicResource Gray800}" FontSize="14" Margin="0,0,0,2"/>
+                                                <TextBlock Text="{Binding Description}" Foreground="{DynamicResource Gray600}" FontSize="12" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <TextBlock Grid.Column="2" Text="&#xE76C;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource Gray400}" VerticalAlignment="Center" Margin="15,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

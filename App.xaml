@@ -12,6 +12,10 @@
             <converters:EnumBooleanConverter x:Key="EnumBooleanConverter"/>
             <converters:BooleanToTextDecorationsConverter x:Key="BooleanToTextDecorationsConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+            <converters:InverseIntToVisibilityConverter x:Key="InverseIntToVisibilityConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:InverseNullToVisibilityConverter x:Key="InverseNullToVisibilityConverter"/>
 
         <Style TargetType="Window">
             <Setter Property="Background" Value="{DynamicResource Gray100}"/>

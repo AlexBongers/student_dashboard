@@ -153,15 +153,15 @@
                                 </Grid>
                             </Border>
 
-                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource Gray800}" FontSize="14"/>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0">
+                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource Gray800}" FontSize="14" TextTrimming="CharacterEllipsis"/>
                                 <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
                                     <TextBlock Text="{Binding Company}" Foreground="{DynamicResource Gray600}" FontSize="12" TextTrimming="CharacterEllipsis" MaxWidth="150"/>
                                 </StackPanel>
                             </StackPanel>
                             
                             <!-- Pill & Warning Badge -->
-                            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
                                 <TextBlock Text="&#xE7BA;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" Foreground="{DynamicResource DangerColor}" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center" ToolTip="Urgent of Verlopen Deadline!">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
@@ -174,8 +174,8 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                <Border Background="{DynamicResource Gray100}" CornerRadius="4" Padding="6,2">
-                                    <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Gray600}"/>
+                                <Border Background="{DynamicResource Gray100}" CornerRadius="4" Padding="6,2" ToolTip="{Binding Status}">
+                                    <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource Gray600}" TextTrimming="CharacterEllipsis" MaxWidth="110"/>
                                 </Border>
                             </StackPanel>
                         </Grid>

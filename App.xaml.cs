@@ -13,6 +13,14 @@ namespace StageManagementSystem
 
         public App()
         {
+            this.DispatcherUnhandledException += (s, e) =>
+            {
+                System.IO.File.WriteAllText("crash.txt", e.Exception.ToString());
+                MessageBox.Show(e.Exception.Message, "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                e.Handled = true;
+                Shutdown(-1);
+            };
+
             try
             {
                 Services = ConfigureServices();

@@ -9,38 +9,8 @@
              d:DesignHeight="600" d:DesignWidth="600">
     <Border Style="{StaticResource CardStyle}">
         <Grid>
-            <!-- Empty State -->
-            <Grid>
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Student}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock Text="&#xE72B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <TextBlock Text="Selecteer een student" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Klik op een student in de lijst om details te bekijken" Foreground="{DynamicResource Gray600}" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Grid>
-
             <!-- Content -->
             <Grid>
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Student}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
-                
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -52,6 +22,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
@@ -93,27 +64,32 @@
                         </Grid>
                     </Border>
                     
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Gray800}"/>
-                        <StackPanel Orientation="Horizontal">
+                    <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding Student.Name}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource Gray800}" TextTrimming="CharacterEllipsis"/>
+                        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,2,0,0">
                             <TextBlock Text="{Binding Student.StudentNumber}" Foreground="{DynamicResource Gray600}"/>
                             <TextBlock Text=" • " Foreground="{DynamicResource Gray600}"/>
                             <TextBlock Text="{Binding Student.Type}" Foreground="{DynamicResource Gray600}"/>
                             <TextBlock Text=" • " Foreground="{DynamicResource Gray600}"/>
                             <TextBlock Text="{Binding Student.MyRole}" Foreground="{DynamicResource PrimaryColor}" FontWeight="SemiBold"/>
-                        </StackPanel>
-                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0" VerticalAlignment="Center">
+                        </WrapPanel>
+                         <WrapPanel Grid.Row="2" Orientation="Horizontal" Margin="0,4,0,0" VerticalAlignment="Center">
                              <TextBlock Text="&#xE715;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                             <TextBlock Text="{Binding Student.Email}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                             <TextBlock Text="{Binding Student.Email, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center" Margin="0,0,10,0" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                              
                              <Button Content="Stuur Email" Command="{Binding SendEmailCommand}" Style="{StaticResource BtnSecondary}" Padding="8,2" Margin="0,0,16,0" FontSize="10" ToolTip="Start nieuw bericht in standaard e-mailapp"/>
 
                              <TextBlock Text="&#xE717;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                             <TextBlock Text="{Binding Student.Phone}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center"/>
-                         </StackPanel>
-                    </StackPanel>
+                             <TextBlock Text="{Binding Student.Phone, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray600}" VerticalAlignment="Center"/>
+                         </WrapPanel>
+                    </Grid>
                     <!-- Status Dropdown or Pill -->
-                    <StackPanel Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right">
                         <ComboBox ItemsSource="{Binding AvailableStatuses}" 
                                   SelectedItem="{Binding SelectedStatus}" 
                                   Margin="0,0,0,8" 
@@ -121,6 +97,11 @@
                                   Width="120" />
                         <Button Content="{Binding ArchiveButtonText}" Command="{Binding ArchiveStudentCommand}" Style="{StaticResource BtnSecondary}" Padding="12,6" FontSize="12"/>
                     </StackPanel>
+                    
+                    <!-- Close Button -->
+                    <Button Grid.Column="3" Command="{Binding CloseCommand}" Style="{StaticResource BtnSecondary}" Width="32" Height="32" Padding="0" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10,0,0,0" ToolTip="Sluiten">
+                        <TextBlock Text="&#xE711;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource Gray600}"/>
+                    </Button>
                 </Grid>
 
                 <!-- Tabs -->
@@ -159,6 +140,8 @@
                                 <WrapPanel>
                                     <local:InfoBox Label="Bedrijf" Value="{Binding Student.Company}"/>
                                     <local:InfoBox Label="Locatie" Value="{Binding Student.Location}"/>
+                                    <local:InfoBox Label="Opleiding" Value="{Binding Student.StudyProgram}"/>
+                                    <local:InfoBox Label="Groep/Cohort" Value="{Binding Student.Cohort}"/>
                                     <local:InfoBox Label="Startdatum" Value="{Binding Student.StartDate, StringFormat=d}"/>
                                     <local:InfoBox Label="Einddatum" Value="{Binding Student.EndDate, StringFormat=d}"/>
                                 </WrapPanel>
@@ -168,28 +151,74 @@
 
                     <TabItem Header="Workflow">
                         <ScrollViewer>
-                             <ItemsControl ItemsSource="{Binding WorkflowSteps}" Margin="0,16,0,0">
+                             <ItemsControl ItemsSource="{Binding WorkflowSteps}" Margin="10,20,0,20">
                                  <ItemsControl.ItemTemplate>
                                      <DataTemplate>
-                                         <Border Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
-                                             <Grid>
-                                                 <Grid.ColumnDefinitions>
-                                                     <ColumnDefinition Width="Auto"/>
-                                                     <ColumnDefinition Width="*"/>
-                                                     <ColumnDefinition Width="Auto"/>
-                                                 </Grid.ColumnDefinitions>
-                                                 <CheckBox IsChecked="{Binding IsCompleted}" VerticalAlignment="Center" 
-                                                           Command="{Binding DataContext.ToggleWorkflowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                           CommandParameter="{Binding}"/>
-                                                 <TextBlock Grid.Column="1" Text="{Binding Label}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0"/>
-                                                 <TextBlock Grid.Column="2" 
-                                                            Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                            Foreground="{DynamicResource SuccessColor}" FontSize="12" VerticalAlignment="Center">
-                                                     <Run Text="✓ "/>
-                                                     <Run Text="{Binding Date, StringFormat=d}"/>
-                                                 </TextBlock>
+                                         <Grid Margin="0,0,0,10">
+                                             <Grid.ColumnDefinitions>
+                                                 <ColumnDefinition Width="30"/>
+                                                 <ColumnDefinition Width="*"/>
+                                             </Grid.ColumnDefinitions>
+                                             
+                                             <!-- Timeline Line & Node -->
+                                             <Grid Grid.Column="0">
+                                                 <!-- Vertical connecting line (hidden for the last item, handled imperfectly without multi-binding but good enough for now) -->
+                                                 <Rectangle Width="2" Fill="{DynamicResource Gray300}" HorizontalAlignment="Center" Margin="0,15,0,-15"/>
+                                                 
+                                                 <!-- Colored Node -->
+                                                 <Border x:Name="NodeBorder" Width="20" Height="20" CornerRadius="10" 
+                                                         Background="{DynamicResource Gray200}" BorderBrush="{DynamicResource Gray300}" BorderThickness="2"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,2,0,0">
+                                                         
+                                                     <TextBlock x:Name="NodeIcon" Text="" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" 
+                                                                FontSize="10" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                 </Border>
                                              </Grid>
-                                         </Border>
+                                             
+                                             <!-- Content Card -->
+                                             <Border Grid.Column="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="15" Margin="10,0,0,0">
+                                                 <Grid>
+                                                     <Grid.ColumnDefinitions>
+                                                         <ColumnDefinition Width="Auto"/>
+                                                         <ColumnDefinition Width="*"/>
+                                                         <ColumnDefinition Width="Auto"/>
+                                                     </Grid.ColumnDefinitions>
+                                                     
+                                                     <CheckBox Grid.Column="0" IsChecked="{Binding IsCompleted}" VerticalAlignment="Center" 
+                                                               Command="{Binding DataContext.ToggleWorkflowCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                               CommandParameter="{Binding}" Margin="0,0,12,0"/>
+                                                               
+                                                     <TextBlock x:Name="StepLabel" Grid.Column="1" Text="{Binding Label}" Foreground="{DynamicResource Gray700}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                     
+                                                     <TextBlock Grid.Column="2" 
+                                                                Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                                Foreground="{DynamicResource SuccessColor}" FontSize="12" VerticalAlignment="Center">
+                                                         <Run Text="✓ "/>
+                                                         <Run Text="{Binding Date, StringFormat=d}"/>
+                                                     </TextBlock>
+                                                 </Grid>
+                                             </Border>
+                                         </Grid>
+                                         
+                                         <!-- DataTriggers to color the timeline nodes based on state -->
+                                         <DataTemplate.Triggers>
+                                             <!-- Completed State -->
+                                             <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                                 <Setter TargetName="NodeBorder" Property="Background" Value="{DynamicResource SuccessColor}"/>
+                                                 <Setter TargetName="NodeBorder" Property="BorderBrush" Value="{DynamicResource SuccessColor}"/>
+                                                 <Setter TargetName="NodeIcon" Property="Text" Value="&#xE73E;"/> <!-- Checkmark -->
+                                                 <Setter TargetName="StepLabel" Property="Foreground" Value="{DynamicResource Gray800}"/>
+                                             </DataTrigger>
+                                             
+                                             <!-- Current Active State (Not completed, but next in line) -->
+                                             <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                 <Setter TargetName="NodeBorder" Property="Background" Value="{DynamicResource PrimaryColor}"/>
+                                                 <Setter TargetName="NodeBorder" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
+                                                 <Setter TargetName="NodeIcon" Property="Text" Value="&#xE768;"/> <!-- Play or Right Arrow -->
+                                                 <Setter TargetName="StepLabel" Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
+                                                 <Setter TargetName="StepLabel" Property="FontWeight" Value="Bold"/>
+                                             </DataTrigger>
+                                         </DataTemplate.Triggers>
                                      </DataTemplate>
                                  </ItemsControl.ItemTemplate>
                              </ItemsControl>
@@ -254,14 +283,68 @@
                     </TabItem>
 
                     <TabItem Header="Contact">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            
-                            <ScrollViewer Margin="0,16,0,16">
-                                <ItemsControl ItemsSource="{Binding Contacts}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="0,16,0,16">
+                                
+                                <!-- Top Info Cards -->
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <!-- Student Contact Info -->
+                                    <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,8,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Studentgegevens" FontWeight="Bold" FontSize="14" Margin="0,0,0,12" Foreground="{DynamicResource Gray800}"/>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <TextBlock Text="&#xE715;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Width="20" Foreground="{DynamicResource Gray500}"/>
+                                                <TextBlock Text="{Binding Student.Email, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <TextBlock Text="&#xE717;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Width="20" Foreground="{DynamicResource Gray500}"/>
+                                                <TextBlock Text="{Binding Student.Phone, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE1D1;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Top" Width="20" Foreground="{DynamicResource Gray500}" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding Student.Address, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                    
+                                    <!-- Company & Supervisor Info -->
+                                    <Border Grid.Column="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="8,0,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="Bedrijfsbegeleider" FontWeight="Bold" FontSize="14" Margin="0,0,0,12" Foreground="{DynamicResource Gray800}"/>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <TextBlock Text="&#xE77B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Width="20" Foreground="{DynamicResource Gray500}"/>
+                                                <TextBlock Text="{Binding Student.CompanySupervisorName, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" FontWeight="SemiBold" Foreground="{DynamicResource Gray800}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <TextBlock Text="&#xE715;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Width="20" Foreground="{DynamicResource Gray500}"/>
+                                                <TextBlock Text="{Binding Student.CompanySupervisorEmail, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                <TextBlock Text="&#xE717;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Center" Width="20" Foreground="{DynamicResource Gray500}"/>
+                                                <TextBlock Text="{Binding Student.CompanySupervisorPhone, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xEB4F;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" VerticalAlignment="Top" Width="20" Foreground="{DynamicResource Gray500}" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding Student.CompanyAddress, TargetNullValue='Onbekend', FallbackValue='Onbekend'}" Foreground="{DynamicResource Gray700}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                                
+                                <!-- Contact Log List -->
+                                <ItemsControl ItemsSource="{Binding Contacts}" Margin="0,0,0,16">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Margin="0,0,0,10" Padding="0">
@@ -279,9 +362,9 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                            </ScrollViewer>
 
-                            <Border Grid.Row="1" Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <!-- Add Contact Box -->
+                            <Border Background="{DynamicResource Gray50}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
                                 <StackPanel>
                                     <TextBlock Text="Nieuw contactmoment" FontWeight="Bold" Margin="0,0,0,8"/>
                                     <Grid Margin="0,0,0,8">
@@ -302,7 +385,8 @@
                                     <Button Content="Toevoegen" Command="{Binding AddContactCommand}" Style="{StaticResource BtnPrimary}" HorizontalAlignment="Right"/>
                                 </StackPanel>
                             </Border>
-                        </Grid>
+                        </StackPanel>
+                        </ScrollViewer>
                     </TabItem>
                     
                     <TabItem Header="Bestanden">

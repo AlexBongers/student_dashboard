@@ -27,7 +27,11 @@ namespace StageManagementSystem.ViewModels
         // Chart Data
         [ObservableProperty] private System.Collections.ObjectModel.ObservableCollection<ChartItem>? _statusDistribution;
 
+        // Alerts Data
+        [ObservableProperty] private System.Collections.ObjectModel.ObservableCollection<AlertItem> _alerts = new();
+
         public record ChartItem(string Label, int Value, double Percentage, string ColorResource);
+        public record AlertItem(string Message, string Description, string Icon, string ColorResource, Student? RelatedStudent);
 
         public MainViewModel(StudentService studentService)
         {
@@ -36,6 +40,12 @@ namespace StageManagementSystem.ViewModels
             // We instantiate child ViewModels here. In a more complex app, these might be injected too.
             StudentListViewModel = new StudentListViewModel(_studentService);
             StudentDetailViewModel = new StudentDetailViewModel(_studentService);
+
+            // Wiring up the close action
+            StudentDetailViewModel.OnCloseDetail = () => 
+            {
+                StudentListViewModel.SelectedStudent = null;
+            };
 
             // Sync selection: List -> Detail
             StudentListViewModel.PropertyChanged += (s, e) => {
@@ -245,6 +255,59 @@ namespace StageManagementSystem.ViewModels
                  {
                      StatusDistribution = new System.Collections.ObjectModel.ObservableCollection<ChartItem>();
                  }
+
+                 // Generate Alerts for Action Center
+                 var newAlerts = new System.Collections.ObjectModel.ObservableCollection<AlertItem>();
+
+                 foreach (var s in students)
+                 {
+                     // 1. Check for urgent deadlines (within 7 days and not completed)
+                     var urgentDeadline = s.Deadlines?.FirstOrDefault(d => !d.IsCompleted && (d.DueDate.Date - DateTime.Today).TotalDays <= 7);
+                     if (urgentDeadline != null)
+                     {
+                         int daysLeft = (int)(urgentDeadline.DueDate.Date - DateTime.Today).TotalDays;
+                         string timeText = daysLeft < 0 ? $"({Math.Abs(daysLeft)} dagen te laat)" : $"({daysLeft} dagen)";
+                         newAlerts.Add(new AlertItem(
+                             $"Dringende Deadline: {s.Name}",
+                             $"{urgentDeadline.Title} {timeText}",
+                             "\xE783", // Warning icon
+                             "DangerColor",
+                             s
+                         ));
+                     }
+
+                     // 2. Check for actionable items (Opstart phase for > 14 days)
+                     var lastContact = s.Contacts?.OrderByDescending(c => c.Date).FirstOrDefault();
+                     double daysSinceContact = lastContact != null ? (DateTime.Now - lastContact.Date).TotalDays : (DateTime.Now - s.CreatedAt).TotalDays;
+                     if (s.Status == "Opstart" && daysSinceContact > 14)
+                     {
+                         newAlerts.Add(new AlertItem(
+                             $"Actie Vereist: {s.Name}",
+                             $"Staat al {(int)daysSinceContact} dagen op 'Opstart' zonder contact.",
+                             "\xE814", // Clock/History icon
+                             "WarningColor",
+                             s
+                         ));
+                     }
+
+                     // 3. Check for students awaiting review (Concept 1, 2, Eindversie)
+                     if (s.Status.StartsWith("Concept") || s.Status == "Eindversie")
+                     {
+                         newAlerts.Add(new AlertItem(
+                             $"In Review: {s.Name}",
+                             $"Wacht op beoordeling voor '{s.Status}'",
+                             "\xE7B3", // Document icon
+                             "InfoColor",
+                             s
+                         ));
+                     }
+                 }
+
+                 // Sort alerts (Danger -> Warning -> Info) and attach
+                 var sortedAlerts = newAlerts.OrderByDescending(a => a.ColorResource == "DangerColor")
+                                             .ThenByDescending(a => a.ColorResource == "WarningColor")
+                                             .ThenByDescending(a => a.ColorResource == "InfoColor");
+                 Alerts = new System.Collections.ObjectModel.ObservableCollection<AlertItem>(sortedAlerts);
              }
              catch (Exception ex)
              {
@@ -278,6 +341,17 @@ namespace StageManagementSystem.ViewModels
         {
              StudentListViewModel.StatFilter = StatFilter.Completed;
              // This might auto-trigger load of archived due to logic in VM
+        }
+        
+        [RelayCommand]
+        public void OpenStudentFromAlert(AlertItem alert)
+        {
+            if (alert.RelatedStudent != null)
+            {
+                StudentListViewModel.SelectedStudent = StudentListViewModel.Students.FirstOrDefault(s => s.Id == alert.RelatedStudent.Id);
+                // The parent view/window logic usually handles navigation, but since this is a Single Page App setup, 
+                // selecting the student will populate the StudentDetailViewModel automatically.
+            }
         }
     }
 }

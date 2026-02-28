@@ -14,18 +14,33 @@ namespace StageManagementSystem.Services
             context.Database.EnsureCreated();
 
             // Patch existing database schema to include ProfilePicturePath if it's missing.
-            try
+            var columnsToAdd = new[]
             {
-                using var command = context.Database.GetDbConnection().CreateCommand();
-                command.CommandText = "ALTER TABLE Students ADD COLUMN ProfilePicturePath TEXT;";
-                context.Database.OpenConnection();
-                command.ExecuteNonQuery();
-                context.Database.CloseConnection();
-            }
-            catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 1) // 1 = SQLITE_ERROR, typically "duplicate column name"
+                "ProfilePicturePath TEXT",
+                "Address TEXT",
+                "StudyProgram TEXT",
+                "Cohort TEXT",
+                "CompanyAddress TEXT",
+                "CompanySupervisorName TEXT",
+                "CompanySupervisorEmail TEXT",
+                "CompanySupervisorPhone TEXT"
+            };
+
+            context.Database.OpenConnection();
+            foreach (var col in columnsToAdd)
             {
-                // Column already exists, swallow exception.
+                try
+                {
+                    using var command = context.Database.GetDbConnection().CreateCommand();
+                    command.CommandText = $"ALTER TABLE Students ADD COLUMN {col};";
+                    command.ExecuteNonQuery();
+                }
+                catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 1)
+                {
+                    // Column already exists, continue to the next one
+                }
             }
+            context.Database.CloseConnection();
 
             if (!context.Students.Any())
             {
@@ -87,6 +102,11 @@ namespace StageManagementSystem.Services
                     StudentNumber = "1766880", Company = "Achmea", 
                     Type = "scriptie", MyRole = "1e examinator", 
                     Status = "PvA", StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(5),
+                    Email = "abderrahim.boutahiri@student.hu.nl", Phone = "+31-685413584",
+                    Address = "Costa Ricadreef 106, 3563 TJ UTRECHT, Nederland",
+                    StudyProgram = "B HBO-ICT", Cohort = "25-26 AFSTUDEREN BIM VOLTIJD",
+                    CompanyAddress = "Laan van Malkenschoten 20, 7333NP Apeldoorn",
+                    CompanySupervisorName = "Brechtje Veenstra & Maiko Bergman", CompanySupervisorEmail = "Brechtje.veenstra@achmea.nl", CompanySupervisorPhone = "0651694785",
                     Notes = "Begeleider: Brechtje Veenstra (Achmea)\nSchoolbegeleider: Pascal Kwanten\nVoortgang: Uploaden Plan van Aanpak (poging 1)"
                 },
                 new Student 
@@ -94,7 +114,12 @@ namespace StageManagementSystem.Services
                     FirstName = "Ibrahim", LastName = "Errahoui", 
                     StudentNumber = "1809615", Company = "RDW", 
                     Type = "scriptie", MyRole = "1e examinator", 
-                    Status = "PvA", StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(5),
+                    Status = "PvA", StartDate = DateTime.Parse("2026-02-01"), EndDate = DateTime.Parse("2026-06-30"),
+                    Email = "ibrahim.errahoui@student.hu.nl", Phone = "+31-0633106597",
+                    Address = "De Kriek 22, 3451 KK VLEUTEN, Nederland",
+                    StudyProgram = "B HBO-ICT", Cohort = "25-26 AFSTUDEREN BIM VOLTIJD",
+                    CompanyAddress = "Europaweg 205, 2711ER Zoetermeer",
+                    CompanySupervisorName = "Dielis IJlstra", CompanySupervisorEmail = "dijlstra@rdw.nl", CompanySupervisorPhone = "+31625764024",
                     Notes = "Begeleider: Dielis IJlstra (RDW)\nSchoolbegeleider: Alex Bongers\nVoortgang: Uploaden Plan van Aanpak in progress (ingeleverd op 18-02-2026)"
                 },
                 new Student 
@@ -102,7 +127,12 @@ namespace StageManagementSystem.Services
                     FirstName = "Ruben", LastName = "van Gend", 
                     StudentNumber = "1814639", Company = "De belastingdienst", 
                     Type = "scriptie", MyRole = "1e examinator", 
-                    Status = "Definitief", StartDate = DateTime.Now, EndDate = DateTime.Now.AddMonths(5), // Using 'definitief' for eindversie/end product
+                    Status = "Definitief", StartDate = DateTime.Parse("2024-08-31"), EndDate = DateTime.Parse("2025-08-30"),
+                    Email = "ruben.vangend@student.hu.nl", Phone = "+31-657641891",
+                    Address = "De Abdij 8, 4012 EN KERK-AVEZAATH, Nederland",
+                    StudyProgram = "B HBO-ICT", Cohort = "24-25 AFSTUDEREN BIM VOLTIJD",
+                    CompanyAddress = "John F. Kennedylaan 8, 7314PS Apeldoorn",
+                    CompanySupervisorName = "Linda de Jong", CompanySupervisorEmail = "gje.de.jong@belastingdienst.nl", CompanySupervisorPhone = "0631071988",
                     Notes = "Begeleider: Linda de Jong (De belastingdienst)\nSchoolbegeleider: Alex Bongers & Marco Gomes\nVoortgang: Bijna klaar, huidige fase: Uploaden & Beoordelen Eindproduct(en)"
                 },
                 new Student 
@@ -110,7 +140,12 @@ namespace StageManagementSystem.Services
                     FirstName = "Job", LastName = "Huguenin", 
                     StudentNumber = "1848884", Company = "Veiligheidsregio Gelderland Zuid", 
                     Type = "stage", MyRole = "docentbegeleider", 
-                    Status = "Opstart", StartDate = DateTime.Parse("2026-02-01"), EndDate = DateTime.Parse("2026-07-31"),
+                    Status = "Opstart", StartDate = DateTime.Parse("2026-02-02"), EndDate = DateTime.Parse("2026-07-10"),
+                    Email = "job.huguenin@student.hu.nl", Phone = "+31-0623064808",
+                    Address = "Homberg 2019, 6601 ZE WIJCHEN, Nederland",
+                    StudyProgram = "B HBO-ICT", Cohort = "25-26 STAGE jaar 3 BIM 2026",
+                    CompanyAddress = "Professor Bellefroidstraat 11, 6525AG Nijmegen",
+                    CompanySupervisorName = "Patrick van den Elzen", CompanySupervisorEmail = "patrick.van.den.elzen@vrgz.nl", CompanySupervisorPhone = "06 4832 4305",
                     Notes = "Begeleider: Patrick van den Elzen (Veiligheidsregio Gelderland-Zuid)\nSchoolbegeleider: Alex Bongers\nVoortgang: Stageovereenkomst goedgekeurd, huidige fase: Uploaden Portfolio"
                 },
                 new Student 
@@ -119,7 +154,12 @@ namespace StageManagementSystem.Services
                     StudentNumber = "1859994", Company = "Monta Services B.V.", 
                     Type = "stage", MyRole = "docentbegeleider", 
                     Status = "Concept 1", StartDate = DateTime.Parse("2026-02-01"), EndDate = DateTime.Parse("2026-07-31"),
-                    Notes = "Begeleider: Teus van den Dool (T-Systems Nederland B.V.)\nSchoolbegeleider: Alex Bongers & Marco Gomes\nVoortgang: Plan van Aanpak goedgekeurd"
+                    Email = "ridvan.kapici@student.hu.nl", Phone = "+31-616012045",
+                    Address = "Maria Theresiadreef 21, 3561 TA UTRECHT, Nederland",
+                    StudyProgram = "B HBO-ICT", Cohort = "25-26 STAGE jaar 3 BIM 2026",
+                    CompanyAddress = "Papland 16, 4206CL Gorinchem",
+                    CompanySupervisorName = "Niels de Cock & Rachel Egas", CompanySupervisorEmail = "niels.decock@monta.nl",
+                    Notes = "Begeleider: Niels de Cock & Rachel Egas\nSchoolbegeleider: Alex Bongers & Marco Gomes\nVoortgang: Plan van Aanpak goedgekeurd"
                 },
                 new Student 
                 { 

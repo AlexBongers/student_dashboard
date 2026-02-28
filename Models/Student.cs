@@ -33,6 +33,15 @@ namespace StageManagementSystem.Models
         
         public string? Location { get; set; }
         
+        public string? Address { get; set; }
+        public string? StudyProgram { get; set; }
+        public string? Cohort { get; set; }
+        
+        public string? CompanyAddress { get; set; }
+        public string? CompanySupervisorName { get; set; }
+        public string? CompanySupervisorEmail { get; set; }
+        public string? CompanySupervisorPhone { get; set; }
+        
         public DateTime StartDate { get; set; }
         
         public DateTime EndDate { get; set; }

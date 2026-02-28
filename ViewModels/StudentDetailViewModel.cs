@@ -22,6 +22,13 @@ namespace StageManagementSystem.ViewModels
             set => SetProperty(ref _isCompleted, value);
         }
 
+        private bool _isCurrent;
+        public bool IsCurrent
+        {
+            get => _isCurrent;
+            set => SetProperty(ref _isCurrent, value);
+        }
+
         public DateTime? Date { get; set; }
     }
 
@@ -78,6 +85,11 @@ namespace StageManagementSystem.ViewModels
         {
             _studentService = studentService;
         }
+
+        public Action OnCloseDetail { get; set; }
+
+        [RelayCommand]
+        public void Close() => OnCloseDetail?.Invoke();
 
         partial void OnStudentChanged(Student? value)
         {
@@ -208,6 +220,7 @@ namespace StageManagementSystem.ViewModels
                     }
 
                     Student = updatedStudent;
+                    UpdateWorkflowList(updatedStudent); // Refresh current step logic
                 }
             } 
             catch (Exception ex)
@@ -370,14 +383,26 @@ namespace StageManagementSystem.ViewModels
             WorkflowSteps.Clear();
             var definitions = GetWorkflowDefinitions(student.Type);
             
+            bool foundCurrent = false;
+
             foreach (var def in definitions)
             {
                 var existing = student.WorkflowSteps.FirstOrDefault(w => w.StepKey == def.Key);
+                bool isCompleted = existing?.Completed ?? false;
+                
+                bool isCurrent = false;
+                if (!isCompleted && !foundCurrent)
+                {
+                    isCurrent = true;
+                    foundCurrent = true; // Mark the first uncompleted step as current
+                }
+
                 WorkflowSteps.Add(new WorkflowItem
                 {
                     Key = def.Key,
                     Label = def.Label,
-                    IsCompleted = existing?.Completed ?? false,
+                    IsCompleted = isCompleted,
+                    IsCurrent = isCurrent,
                     Date = existing?.CompletedDate
                 });
             }

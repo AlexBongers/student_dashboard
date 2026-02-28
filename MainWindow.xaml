@@ -82,22 +82,94 @@
         </Border>
 
         <!-- Dashboard (Collapsible if needed, but for now fixed top) -->
-        <views:DashboardView Grid.Row="1" Margin="24,24,24,0"/>
+        <!-- Removed Dashboard row -> Moved to Detail View -->
 
         <!-- Main Content (List + Detail) -->
         <Grid Grid.Row="2" Margin="24">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="380" MinWidth="300" MaxWidth="600"/>
+                <ColumnDefinition Width="450" MinWidth="400" MaxWidth="600"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <views:StudentListView Grid.Column="0" DataContext="{Binding StudentListViewModel}"/>
+            <!-- Left Panel: Stats Chips & Student List -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Grid.Resources>
+                    <!-- Style for Dashboard Tile Buttons -->
+                    <Style x:Key="TileButtonStyle" TargetType="Button">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="2"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+
+                <!-- Stat Chips -->
+                <UniformGrid Rows="1" Columns="4" Margin="0,0,0,10">
+                    <!-- Danger Chip -->
+                    <Button Command="{Binding FilterNeedsActionCommand}" Style="{StaticResource TileButtonStyle}">
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="6" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Rectangle Width="8" Height="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource DangerColor}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding NeedsActionCount, StringFormat='Actie: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                    <!-- Warning Chip -->
+                    <Button Command="{Binding FilterInReviewCommand}" Style="{StaticResource TileButtonStyle}">
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="6" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Rectangle Width="8" Height="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource WarningColor}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding InReviewCount, StringFormat='Review: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                    <!-- Info Chip -->
+                    <Button Command="{Binding FilterActiveCommand}" Style="{StaticResource TileButtonStyle}">
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="6" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Rectangle Width="8" Height="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource InfoColor}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding ActiveCount, StringFormat='Actief: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                    <!-- Success Chip -->
+                    <Button Command="{Binding FilterCompletedCommand}" Style="{StaticResource TileButtonStyle}">
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1" CornerRadius="6" Padding="6,4">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Rectangle Width="8" Height="8" RadiusX="4" RadiusY="4" Fill="{DynamicResource SuccessColor}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding CompletedMonthCount, StringFormat='Klaar: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Gray700}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Button>
+                </UniformGrid>
+
+                <views:StudentListView Grid.Row="1" DataContext="{Binding StudentListViewModel}"/>
+            </Grid>
             
             <!-- Splitter -->
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Transparent" ShowsPreview="True"/>
             
-            <views:StudentDetailView Grid.Column="2" Margin="10,0,0,0" DataContext="{Binding StudentDetailViewModel}"/>
+            <!-- Right Panel: Empty State (Dashboard) OR Detail View -->
+            <Grid Grid.Column="2" Margin="10,0,0,0">
+                <views:DashboardView Visibility="{Binding StudentListViewModel.SelectedStudent, Converter={StaticResource InverseNullToVisibilityConverter}}"/>
+                <views:StudentDetailView DataContext="{Binding StudentDetailViewModel}" Visibility="{Binding StudentListViewModel.SelectedStudent, Converter={StaticResource NullToVisibilityConverter}}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
