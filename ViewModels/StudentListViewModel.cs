@@ -105,7 +105,7 @@ namespace StageManagementSystem.ViewModels
                     });
                     break;
                 case StatFilter.InReview:
-                    filtered = filtered.Where(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie");
+                    filtered = filtered.Where(s => s.Status == "Concept 1" || s.Status == "Concept 2" || s.Status == "Eindversie" || s.Status == "Definitief");
                     break;
                 case StatFilter.Active:
                     // Just basic active list, potentially already filtered by LoadData

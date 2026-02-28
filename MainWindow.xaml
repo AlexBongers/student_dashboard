@@ -168,7 +168,7 @@
             <!-- Right Panel: Empty State (Dashboard) OR Detail View -->
             <Grid Grid.Column="2" Margin="10,0,0,0">
                 <views:DashboardView Visibility="{Binding StudentListViewModel.SelectedStudent, Converter={StaticResource InverseNullToVisibilityConverter}}"/>
-                <views:StudentDetailView DataContext="{Binding StudentDetailViewModel}" Visibility="{Binding StudentListViewModel.SelectedStudent, Converter={StaticResource NullToVisibilityConverter}}"/>
+                <views:StudentDetailView DataContext="{Binding StudentDetailViewModel}" Visibility="{Binding Student, Converter={StaticResource NullToVisibilityConverter}}"/>
             </Grid>
         </Grid>
     </Grid>

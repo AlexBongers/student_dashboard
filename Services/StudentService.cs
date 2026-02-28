@@ -31,7 +31,7 @@ namespace StageManagementSystem.Services
         public async Task<List<Student>> GetActiveStudentsAsync()
         {
             return await _context.Students
-                .Where(s => !s.Archived)
+                .Where(s => !s.Archived && (!string.IsNullOrEmpty(s.FirstName) || !string.IsNullOrEmpty(s.LastName)))
                 .Include(s => s.Contacts)
                 .Include(s => s.WorkflowSteps)
                 .Include(s => s.Deadlines)
@@ -43,7 +43,7 @@ namespace StageManagementSystem.Services
         public async Task<List<Student>> GetArchivedStudentsAsync()
         {
             return await _context.Students
-                .Where(s => s.Archived)
+                .Where(s => s.Archived && (!string.IsNullOrEmpty(s.FirstName) || !string.IsNullOrEmpty(s.LastName)))
                 .Include(s => s.Contacts)
                 .Include(s => s.WorkflowSteps)
                 .Include(s => s.Deadlines)

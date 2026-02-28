@@ -193,6 +193,26 @@ namespace StageManagementSystem.ViewModels
             await UpdateStats();
         }
 
+        [RelayCommand]
+        public void FilterNeedsAction() => ToggleFilter(StatFilter.NeedsAction);
+        
+        [RelayCommand]
+        public void FilterInReview() => ToggleFilter(StatFilter.InReview);
+        
+        [RelayCommand]
+        public void FilterActive() => ToggleFilter(StatFilter.Active);
+        
+        [RelayCommand]
+        public void FilterCompleted() => ToggleFilter(StatFilter.Completed);
+
+        private void ToggleFilter(StatFilter filter)
+        {
+            if (StudentListViewModel.StatFilter == filter)
+                StudentListViewModel.StatFilter = StatFilter.None;
+            else
+                StudentListViewModel.StatFilter = filter;
+        }
+
         public async Task UpdateStats()
         {
              try
@@ -315,34 +335,7 @@ namespace StageManagementSystem.ViewModels
              }
         }
 
-        [RelayCommand]
-        public void FilterNeedsAction()
-        {
-            StudentListViewModel.StatFilter = StatFilter.NeedsAction;
-            StudentListViewModel.ShowArchived = false;
-        }
 
-        [RelayCommand]
-        public void FilterInReview()
-        {
-             StudentListViewModel.StatFilter = StatFilter.InReview;
-             StudentListViewModel.ShowArchived = false;
-        }
-
-        [RelayCommand]
-        public void FilterActive()
-        {
-             StudentListViewModel.StatFilter = StatFilter.Active;
-             StudentListViewModel.ShowArchived = false;
-        }
-
-        [RelayCommand]
-        public void FilterCompleted()
-        {
-             StudentListViewModel.StatFilter = StatFilter.Completed;
-             // This might auto-trigger load of archived due to logic in VM
-        }
-        
         [RelayCommand]
         public void OpenStudentFromAlert(AlertItem alert)
         {
