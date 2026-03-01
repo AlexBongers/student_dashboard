@@ -1,0 +1,8 @@
+System.ArgumentException: WebView2 was already initialized with a different CoreWebView2Environment. Check to see if the Source property was already set or EnsureCoreWebView2Async was previously called with different values.
+   at Microsoft.Web.WebView2.Wpf.WebView2Base.EnsureCoreWebView2Async(CoreWebView2Environment environment, CoreWebView2ControllerOptions controllerOptions)
+   at Microsoft.Web.WebView2.Wpf.WebView2Base.EnsureCoreWebView2Async(CoreWebView2Environment environment)
+   at Microsoft.Web.WebView2.Wpf.WebView2.EnsureCoreWebView2Async(CoreWebView2Environment environment)
+   at StageManagementSystem.Views.SyncWindow.InitializeAsync() in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\Views\SyncWindow.xaml.cs:line 27
+   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__128_0(Object state)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)

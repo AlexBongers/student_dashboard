@@ -1,18 +1,24 @@
-Startup Error: SQLite Error 1: 'no such column: s.Address'.
+Startup Error: The LINQ expression 'DbSet<Student>()
+    .GroupBy(s => new { 
+        FirstName = s.FirstName, 
+        LastName = s.LastName, 
+        StudentNumber = s.StudentNumber
+     })
+    .Where(g => g
+        .AsQueryable()
+        .Count() > 1)' could not be translated. Either rewrite the query in a form that can be translated, or switch to client evaluation explicitly by inserting a call to 'AsEnumerable', 'AsAsyncEnumerable', 'ToList', or 'ToListAsync'. See https://go.microsoft.com/fwlink/?linkid=2101038 for more information.
 
-   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
-   at Microsoft.Data.Sqlite.SqliteCommand.PrepareAndEnumerateStatements()+MoveNext()
-   at Microsoft.Data.Sqlite.SqliteCommand.GetStatements()+MoveNext()
-   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
-   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
-   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReader(CommandBehavior behavior)
-   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
-   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
-   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
-   at Microsoft.EntityFrameworkCore.Storage.NonRetryingExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
-   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+   at Microsoft.EntityFrameworkCore.Query.Internal.NavigationExpandingExpressionVisitor.Expand(Expression query)
+   at Microsoft.EntityFrameworkCore.Query.QueryTranslationPreprocessor.Process(Expression query)
+   at Microsoft.EntityFrameworkCore.Query.QueryCompilationContext.CreateQueryExecutor[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Storage.Database.CompileQuery[TResult](Expression query, Boolean async)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.CompileQueryCore[TResult](IDatabase database, Expression query, IModel model, Boolean async)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.<>c__DisplayClass9_0`1.<Execute>b__0()
+   at Microsoft.EntityFrameworkCore.Query.Internal.CompiledQueryCache.GetOrAddQuery[TResult](Object cacheKey, Func`1 compiler)
+   at Microsoft.EntityFrameworkCore.Query.Internal.QueryCompiler.Execute[TResult](Expression query)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryProvider.Execute[TResult](Expression expression)
+   at Microsoft.EntityFrameworkCore.Query.Internal.EntityQueryable`1.GetEnumerator()
    at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
    at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
-   at StageManagementSystem.Services.DatabaseService.UpgradeLegacyStatuses(AppDbContext context) in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\Services\DatabaseService.cs:line 63
-   at StageManagementSystem.Services.DatabaseService.Initialize() in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\Services\DatabaseService.cs:line 43
-   at StageManagementSystem.App.OnStartup(StartupEventArgs e) in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\App.xaml.cs:line 58
+   at StageManagementSystem.DuplicateCleaner.CleanDuplicates() in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\DuplicateCleaner.cs:line 14
+   at StageManagementSystem.App.OnStartup(StartupEventArgs e) in C:\Users\Alex\OneDrive - Stichting Hogeschool Utrecht\Documenten\Antigravity\StageManagementSystem\App.xaml.cs:line 61

@@ -83,6 +83,21 @@ namespace StageManagementSystem.ViewModels
         }
 
         [RelayCommand]
+        public async Task SyncOnStage()
+        {
+            var window = new Views.SyncWindow(_studentService)
+            {
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+            
+            if (window.ShowDialog() == true)
+            {
+                // Refresh if the window indicates changes were made
+                await Refresh();
+            }
+        }
+
+        [RelayCommand]
         public async Task Export()
         {
             var dialog = new Microsoft.Win32.SaveFileDialog
@@ -145,6 +160,9 @@ namespace StageManagementSystem.ViewModels
                     if (lines.Length <= 1) return; // Empty or just header
 
                     int importedCount = 0;
+                    int duplicateCount = 0;
+                    var allStudents = await _studentService.GetAllStudentsAsync();
+
                     for (int i = 1; i < lines.Length; i++)
                     {
                         var line = lines[i];
@@ -154,11 +172,22 @@ namespace StageManagementSystem.ViewModels
 
                         if (values.Length >= 4)
                         {
+                            string firstName = values[0].Trim('"', ' ');
+                            string lastName = values[1].Trim('"', ' ');
+                            string studentNum = ((values.Length > 2) ? values[2].Trim('"', ' ') : "");
+
+                            // Check for duplicates
+                            if (allStudents.Any(s => s.FirstName == firstName && s.LastName == lastName && s.StudentNumber == studentNum))
+                            {
+                                duplicateCount++;
+                                continue;
+                            }
+
                             var student = new Student
                             {
-                                FirstName = values[0].Trim('"', ' '),
-                                LastName = values[1].Trim('"', ' '),
-                                StudentNumber = values.Length > 2 ? values[2].Trim('"', ' ') : "",
+                                FirstName = firstName,
+                                LastName = lastName,
+                                StudentNumber = studentNum,
                                 Company = values.Length > 3 ? values[3].Trim('"', ' ') : "",
                                 Type = values.Length > 4 ? values[4].Trim('"', ' ') : "stage",
                                 MyRole = values.Length > 5 ? values[5].Trim('"', ' ') : "docentbegeleider",
@@ -169,13 +198,16 @@ namespace StageManagementSystem.ViewModels
                             };
 
                             await _studentService.AddStudentAsync(student);
+                            allStudents.Add(student); // Add to local list so we don't duplicate within same CSV
                             importedCount++;
                         }
                     }
 
-                    if (importedCount > 0)
+                    if (importedCount > 0 || duplicateCount > 0)
                     {
-                        System.Windows.MessageBox.Show($"{importedCount} student(en) succesvol geïmporteerd!", "Succes", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                        string msg = $"{importedCount} nieuwe student(en) succesvol geïmporteerd.";
+                        if (duplicateCount > 0) msg += $"\n{duplicateCount} duplicaten overgeslagen.";
+                        System.Windows.MessageBox.Show(msg, "Import Voltooid", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
                         await Refresh();
                     }
                 }

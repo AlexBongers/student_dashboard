@@ -57,6 +57,9 @@ namespace StageManagementSystem
                 var dbService = Services.GetRequiredService<DatabaseService>();
                 dbService.Initialize();
 
+                // Run once to clean any existing duplicates
+                DuplicateCleaner.CleanDuplicates();
+
                 var mainWindow = Services.GetRequiredService<MainWindow>();
                 mainWindow.Show();
             }
