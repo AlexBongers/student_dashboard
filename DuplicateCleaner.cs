@@ -10,8 +10,11 @@ namespace StageManagementSystem
         {
             using var context = new AppDbContext();
             
+            // Load all students into memory first to avoid SQLite translation issues with GroupBy
+            var allStudents = context.Students.ToList();
+
             // Group by First Name, Last Name, and Student Number to find duplicates
-            var groupedStudents = context.Students
+            var groupedStudents = allStudents
                 .GroupBy(s => new { s.FirstName, s.LastName, s.StudentNumber })
                 .Where(g => g.Count() > 1)
                 .ToList();
