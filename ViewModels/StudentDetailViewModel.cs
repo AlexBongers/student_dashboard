@@ -130,6 +130,41 @@ namespace StageManagementSystem.ViewModels
         }
 
         [RelayCommand]
+        public async Task SelectProfilePicture()
+        {
+            if (Student == null) return;
+
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp",
+                Title = "Kies Profielfoto"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string appData = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "StageManagementSystem", "ProfilePictures");
+                    System.IO.Directory.CreateDirectory(appData);
+
+                    string ext = System.IO.Path.GetExtension(dialog.FileName);
+                    string newFileName = $"{Guid.NewGuid()}{ext}";
+                    string destPath = System.IO.Path.Combine(appData, newFileName);
+
+                    System.IO.File.Copy(dialog.FileName, destPath, true);
+                    
+                    Student.ProfilePicturePath = destPath;
+                    await _studentService.UpdateStudentAsync(Student);
+                    OnPropertyChanged(nameof(Student));
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Fout bij aanpassen van profielfoto: {ex.Message}", "Fout", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }
+            }
+        }
+
+        [RelayCommand]
         public void SendEmail()
         {
             if (Student == null || string.IsNullOrWhiteSpace(Student.Email))

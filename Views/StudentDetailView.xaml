@@ -26,8 +26,9 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <Border Width="80" Height="80" CornerRadius="40" Background="{DynamicResource Gray100}" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Button Command="{Binding SelectProfilePictureCommand}" Width="80" Height="80" Margin="0,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{StaticResource BtnSecondary}" Padding="0" ToolTip="Wijzig Profielfoto" Background="Transparent" BorderThickness="0">
                         <Grid>
+                            <Border CornerRadius="40" Width="80" Height="80" Background="{DynamicResource Gray100}" BorderBrush="{DynamicResource Gray200}" BorderThickness="1"/>
                             <TextBlock Text="&#xE77B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="36" Foreground="{DynamicResource Gray400}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
@@ -62,7 +63,7 @@
                                 </Border.Style>
                             </Border>
                         </Grid>
-                    </Border>
+                    </Button>
                     
                     <Grid Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
                         <Grid.RowDefinitions>
