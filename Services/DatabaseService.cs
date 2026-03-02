@@ -42,10 +42,10 @@ namespace StageManagementSystem.Services
             }
             context.Database.CloseConnection();
 
-            if (!context.Students.Any())
-            {
-                SeedData(context);
-            }
+            // if (!context.Students.Any())
+            // {
+            //     SeedData(context);
+            // }
             
             // Auto-upgrade legacy lowercase statuses in the database
             UpgradeLegacyStatuses(context);
