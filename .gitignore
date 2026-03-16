@@ -8,3 +8,7 @@ obj/
 
 Publish/
 publish_single_file/
+
+# WebApp build artifacts (Render.com / Docker build will produce these)
+WebApp/bin/
+WebApp/obj/
