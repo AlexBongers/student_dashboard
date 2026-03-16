@@ -1,0 +1,23 @@
+## Render.com deployment configuration
+## https://render.com/docs/render-yaml-spec
+
+services:
+  - type: web
+    name: student-dashboard
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # Render.com free plan: 512 MB RAM, shared CPU
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: student-dashboard-db
+          property: connectionString
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+databases:
+  - name: student-dashboard-db
+    plan: free
+    databaseName: studentdashboard
+    user: studentdashboard

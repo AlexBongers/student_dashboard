@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Student Dashboard</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true" />
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar-brand { font-weight: 700; color: #4f46e5 !important; }
+        .sidebar { background: #1e1b4b; min-height: calc(100vh - 56px); }
+        .sidebar .nav-link { color: #c7d2fe; padding: .5rem 1rem; border-radius: 6px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #4f46e5; color: #fff; }
+        .card { border: none; box-shadow: 0 1px 4px rgba(0,0,0,.08); border-radius: 10px; }
+        .badge-opstart { background:#94a3b8; }
+        .badge-pva { background:#60a5fa; }
+        .badge-concept1 { background:#a78bfa; }
+        .badge-concept2 { background:#f472b6; }
+        .badge-eindversie { background:#fb923c; }
+        .badge-definitief { background:#34d399; }
+        .badge-herkansing { background:#f87171; }
+        .badge-afgerond { background:#6ee7b7; color:#065f46; }
+        .table th { font-size:.8rem; text-transform:uppercase; letter-spacing:.05em; color:#6b7280; border-top:none; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background:#1e1b4b;">
+            <div class="container-fluid px-3">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">📋 Student Dashboard</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/Index">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/Students/Create">+ Nieuwe student</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-page="/Students/Archived">Archief</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid px-4 py-3">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted py-2">
+        <div class="container-fluid px-4">
+            <small>&copy; 2026 - Student Dashboard</small>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

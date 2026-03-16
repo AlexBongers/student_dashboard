@@ -1,0 +1,63 @@
+@page
+@model WebApp.Pages.Students.ArchivedModel
+@{
+    ViewData["Title"] = "Archief";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Gearchiveerde studenten</h2>
+    <a asp-page="/Index" class="btn btn-outline-secondary">← Terug naar dashboard</a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Naam</th>
+                    <th>Type</th>
+                    <th>Bedrijf</th>
+                    <th>Status</th>
+                    <th>Gearchiveerd op</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Students.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Geen gearchiveerde studenten.</td>
+                    </tr>
+                }
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>
+                            <a asp-page="/Students/Details" asp-route-id="@student.Id"
+                               class="fw-semibold text-decoration-none text-dark">
+                                @student.Name
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge @(student.Type == "stage" ? "bg-info text-dark" : "bg-purple")"
+                                  style="@(student.Type == "scriptie" ? "background:#7c3aed;" : "")">
+                                @student.Type
+                            </span>
+                        </td>
+                        <td class="text-muted">@student.Company</td>
+                        <td><span class="badge bg-secondary">@student.Status</span></td>
+                        <td class="text-muted small">@(student.ArchivedAt?.ToString("dd-MM-yyyy") ?? "–")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Unarchive" class="d-inline">
+                                <input type="hidden" name="id" value="@student.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-success me-1">↩️ Herstellen</button>
+                            </form>
+                            <a asp-page="/Students/Details" asp-route-id="@student.Id"
+                               class="btn btn-sm btn-outline-primary">Bekijk</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

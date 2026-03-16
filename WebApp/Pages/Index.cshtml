@@ -1,0 +1,127 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Actieve Studenten</h2>
+    <a asp-page="/Students/Create" class="btn btn-primary">+ Nieuwe student</a>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.SearchQuery))
+{
+    <div class="alert alert-info py-2">
+        Zoekresultaten voor: <strong>@Model.SearchQuery</strong>
+        <a asp-page="/Index" class="ms-2 text-muted small">Wis zoekopdracht</a>
+    </div>
+}
+
+<!-- Summary cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card p-3">
+            <div class="text-muted small">Totaal actief</div>
+            <div class="fs-3 fw-bold text-primary">@Model.Students.Count</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3">
+            <div class="text-muted small">Stage</div>
+            <div class="fs-3 fw-bold text-info">@Model.Students.Count(s => s.Type == "stage")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3">
+            <div class="text-muted small">Scriptie</div>
+            <div class="fs-3 fw-bold text-purple" style="color:#7c3aed;">@Model.Students.Count(s => s.Type == "scriptie")</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card p-3">
+            <div class="text-muted small">Urgente deadlines</div>
+            <div class="fs-3 fw-bold text-danger">@Model.Students.Count(s => s.HasUrgentDeadline)</div>
+        </div>
+    </div>
+</div>
+
+<!-- Search & filter -->
+<form method="get" class="mb-3 d-flex gap-2">
+    <input type="text" name="q" value="@Model.SearchQuery" class="form-control" placeholder="Zoek op naam, studentnummer of bedrijf..." style="max-width:400px;" />
+    <button type="submit" class="btn btn-outline-secondary">Zoeken</button>
+</form>
+
+<!-- Student table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Naam</th>
+                    <th>Nr.</th>
+                    <th>Type</th>
+                    <th>Bedrijf</th>
+                    <th>Status</th>
+                    <th>Periode</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Students.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">Geen studenten gevonden.</td>
+                    </tr>
+                }
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>
+                            <a asp-page="/Students/Details" asp-route-id="@student.Id" class="fw-semibold text-decoration-none text-dark">
+                                @student.Name
+                            </a>
+                            @if (student.HasUrgentDeadline)
+                            {
+                                <span class="ms-1 badge bg-danger">⚠️ Deadline</span>
+                            }
+                        </td>
+                        <td class="text-muted small">@student.StudentNumber</td>
+                        <td>
+                            @if (student.Type == "stage")
+                            {
+                                <span class="badge bg-info text-dark">Stage</span>
+                            }
+                            else
+                            {
+                                <span class="badge" style="background:#7c3aed;">Scriptie</span>
+                            }
+                        </td>
+                        <td class="text-muted">@student.Company</td>
+                        <td>
+                            @{
+                                var statusCss = student.Status?.ToLower().Replace(" ", "") switch {
+                                    "opstart" => "secondary",
+                                    "pva" => "primary",
+                                    "concept1" => "info",
+                                    "concept2" => "warning",
+                                    "eindversie" => "warning",
+                                    "definitief" => "success",
+                                    "herkansing" => "danger",
+                                    "afgerond" => "success",
+                                    _ => "secondary"
+                                };
+                            }
+                            <span class="badge bg-@statusCss">@student.Status</span>
+                        </td>
+                        <td class="text-muted small">
+                            @student.StartDate.ToString("dd-MM-yy") – @student.EndDate.ToString("dd-MM-yy")
+                        </td>
+                        <td>
+                            <a asp-page="/Students/Details" asp-route-id="@student.Id" class="btn btn-sm btn-outline-primary">Bekijk</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

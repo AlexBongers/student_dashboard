@@ -1,0 +1,132 @@
+@page
+@model WebApp.Pages.Students.CreateModel
+@{
+    ViewData["Title"] = "Nieuwe student";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">Dashboard</a></li>
+        <li class="breadcrumb-item active">Nieuwe student</li>
+    </ol>
+</nav>
+
+<h2 class="fw-bold mb-4">Nieuwe student toevoegen</h2>
+
+<div class="card p-4" style="max-width:800px;">
+    <form method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Voornaam *</label>
+                <input asp-for="Student.FirstName" class="form-control" required />
+                <span asp-validation-for="Student.FirstName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Achternaam *</label>
+                <input asp-for="Student.LastName" class="form-control" required />
+                <span asp-validation-for="Student.LastName" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Studentnummer</label>
+                <input asp-for="Student.StudentNumber" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">E-mail</label>
+                <input asp-for="Student.Email" type="email" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Telefoon</label>
+                <input asp-for="Student.Phone" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Type *</label>
+                <select asp-for="Student.Type" class="form-select">
+                    <option value="stage">Stage</option>
+                    <option value="scriptie">Scriptie</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Mijn rol</label>
+                <select asp-for="Student.MyRole" class="form-select">
+                    <option value="docentbegeleider">Docentbegeleider</option>
+                    <option value="1e examinator">1e Examinator</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Status</label>
+                <select asp-for="Student.Status" class="form-select">
+                    <option>Opstart</option>
+                    <option>PvA</option>
+                    <option>Concept 1</option>
+                    <option>Concept 2</option>
+                    <option>Eindversie</option>
+                    <option>Definitief</option>
+                    <option>Herkansing</option>
+                    <option>Afgerond</option>
+                </select>
+            </div>
+
+            <div class="col-12"><hr /><h6 class="text-muted">Studie-informatie</h6></div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Opleiding</label>
+                <input asp-for="Student.StudyProgram" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Cohort</label>
+                <input asp-for="Student.Cohort" class="form-control" />
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Adres student</label>
+                <input asp-for="Student.Address" class="form-control" />
+            </div>
+
+            <div class="col-12"><hr /><h6 class="text-muted">Bedrijfsinformatie</h6></div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Bedrijf *</label>
+                <input asp-for="Student.Company" class="form-control" required />
+                <span asp-validation-for="Student.Company" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Locatie</label>
+                <input asp-for="Student.Location" class="form-control" />
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Adres bedrijf</label>
+                <input asp-for="Student.CompanyAddress" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Naam begeleider bedrijf</label>
+                <input asp-for="Student.CompanySupervisorName" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">E-mail begeleider bedrijf</label>
+                <input asp-for="Student.CompanySupervisorEmail" type="email" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Telefoon begeleider bedrijf</label>
+                <input asp-for="Student.CompanySupervisorPhone" class="form-control" />
+            </div>
+
+            <div class="col-12"><hr /></div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Startdatum</label>
+                <input asp-for="Student.StartDate" type="date" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">Einddatum</label>
+                <input asp-for="Student.EndDate" type="date" class="form-control" />
+            </div>
+            <div class="col-12">
+                <label class="form-label fw-semibold">Notities</label>
+                <textarea asp-for="Student.Notes" class="form-control" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">💾 Student opslaan</button>
+            <a asp-page="/Index" class="btn btn-outline-secondary">Annuleren</a>
+        </div>
+    </form>
+</div>

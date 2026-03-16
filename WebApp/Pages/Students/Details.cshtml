@@ -1,0 +1,259 @@
+@page
+@model WebApp.Pages.Students.DetailsModel
+@{
+    ViewData["Title"] = Model.Student?.Name ?? "Student";
+}
+
+@if (Model.Student == null)
+{
+    <div class="alert alert-warning">Student niet gevonden.</div>
+    return;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="/Index">Dashboard</a></li>
+        <li class="breadcrumb-item active">@Model.Student.Name</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">@Model.Student.Name</h2>
+        <span class="badge bg-primary me-1">@Model.Student.Type</span>
+        <span class="badge bg-secondary">@Model.Student.MyRole</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-page="/Students/Edit" asp-route-id="@Model.Student.Id" class="btn btn-outline-primary btn-sm">✏️ Bewerken</a>
+        <form method="post" asp-page-handler="Archive">
+            <input type="hidden" name="id" value="@Model.Student.Id" />
+            <button type="submit" class="btn btn-outline-warning btn-sm"
+                    onclick="return confirm('Student archiveren?')">📦 Archiveren</button>
+        </form>
+        <form method="post" asp-page-handler="Delete">
+            <input type="hidden" name="id" value="@Model.Student.Id" />
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Student definitief verwijderen?')">🗑️ Verwijderen</button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left column: Info -->
+    <div class="col-lg-4">
+        <!-- Student info card -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold">Studentgegevens</div>
+            <div class="card-body small">
+                <dl class="row mb-0">
+                    <dt class="col-5 text-muted">Studentnr.</dt>
+                    <dd class="col-7">@(Model.Student.StudentNumber ?? "–")</dd>
+                    <dt class="col-5 text-muted">E-mail</dt>
+                    <dd class="col-7">@(Model.Student.Email ?? "–")</dd>
+                    <dt class="col-5 text-muted">Telefoon</dt>
+                    <dd class="col-7">@(Model.Student.Phone ?? "–")</dd>
+                    <dt class="col-5 text-muted">Adres</dt>
+                    <dd class="col-7">@(Model.Student.Address ?? "–")</dd>
+                    <dt class="col-5 text-muted">Opleiding</dt>
+                    <dd class="col-7">@(Model.Student.StudyProgram ?? "–")</dd>
+                    <dt class="col-5 text-muted">Cohort</dt>
+                    <dd class="col-7">@(Model.Student.Cohort ?? "–")</dd>
+                    <dt class="col-5 text-muted">Startdatum</dt>
+                    <dd class="col-7">@Model.Student.StartDate.ToString("dd-MM-yyyy")</dd>
+                    <dt class="col-5 text-muted">Einddatum</dt>
+                    <dd class="col-7">@Model.Student.EndDate.ToString("dd-MM-yyyy")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Company info card -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold">Bedrijfsgegevens</div>
+            <div class="card-body small">
+                <dl class="row mb-0">
+                    <dt class="col-5 text-muted">Bedrijf</dt>
+                    <dd class="col-7">@(Model.Student.Company ?? "–")</dd>
+                    <dt class="col-5 text-muted">Locatie</dt>
+                    <dd class="col-7">@(Model.Student.Location ?? "–")</dd>
+                    <dt class="col-5 text-muted">Adres</dt>
+                    <dd class="col-7">@(Model.Student.CompanyAddress ?? "–")</dd>
+                    <dt class="col-5 text-muted">Begeleider</dt>
+                    <dd class="col-7">@(Model.Student.CompanySupervisorName ?? "–")</dd>
+                    <dt class="col-5 text-muted">Begeleideremail</dt>
+                    <dd class="col-7">@(Model.Student.CompanySupervisorEmail ?? "–")</dd>
+                    <dt class="col-5 text-muted">Begeleidertlf</dt>
+                    <dd class="col-7">@(Model.Student.CompanySupervisorPhone ?? "–")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column: Workflow, notes, contacts, deadlines -->
+    <div class="col-lg-8">
+
+        <!-- Workflow -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold">Workflow voortgang</div>
+            <div class="card-body">
+                @{
+                    var workflowKeys = new[] { "Opstart", "PvA", "Concept 1", "Concept 2", "Eindversie", "Definitief", "Herkansing", "Afgerond" };
+                }
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var key in workflowKeys)
+                    {
+                        var step = Model.Student.WorkflowSteps.FirstOrDefault(w => w.StepKey == key);
+                        var isCompleted = step?.Completed ?? false;
+                        <form method="post" asp-page-handler="ToggleWorkflow" class="d-inline">
+                            <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                            <input type="hidden" name="stepKey" value="@key" />
+                            <input type="hidden" name="completed" value="@(!isCompleted)" />
+                            <button type="submit"
+                                    class="btn btn-sm @(isCompleted ? "btn-success" : "btn-outline-secondary")"
+                                    title="@(step?.CompletedDate?.ToString("dd-MM-yyyy HH:mm") ?? "")">
+                                @(isCompleted ? "✅" : "⬜") @key
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold">Notities</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="SaveNotes">
+                    <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                    <textarea name="notes" class="form-control mb-2" rows="5"
+                              placeholder="Notities over de student...">@Model.Student.Notes</textarea>
+                    <button type="submit" class="btn btn-primary btn-sm">💾 Opslaan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Deadlines -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                <span>Deadlines</span>
+            </div>
+            <div class="card-body">
+                <!-- Add deadline form -->
+                <form method="post" asp-page-handler="AddDeadline" class="row g-2 mb-3">
+                    <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                    <div class="col-md-6">
+                        <input type="text" name="title" class="form-control form-control-sm" placeholder="Omschrijving deadline" required />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" name="dueDate" class="form-control form-control-sm" required />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">+ Voeg toe</button>
+                    </div>
+                </form>
+
+                @if (!Model.Student.Deadlines.Any())
+                {
+                    <p class="text-muted small mb-0">Geen deadlines.</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var deadline in Model.Student.Deadlines.OrderBy(d => d.DueDate))
+                        {
+                            var daysLeft = (deadline.DueDate.Date - DateTime.Today).TotalDays;
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <form method="post" asp-page-handler="ToggleDeadline" class="d-inline me-2">
+                                        <input type="hidden" name="deadlineId" value="@deadline.Id" />
+                                        <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                                        <input type="hidden" name="completed" value="@(!deadline.IsCompleted)" />
+                                        <button type="submit" class="btn btn-sm p-0 border-0 bg-transparent">
+                                            @(deadline.IsCompleted ? "✅" : "⬜")
+                                        </button>
+                                    </form>
+                                    <span class="@(deadline.IsCompleted ? "text-decoration-line-through text-muted" : "")">
+                                        @deadline.Title
+                                    </span>
+                                    <small class="ms-2 text-muted">@deadline.DueDate.ToString("dd-MM-yyyy")</small>
+                                    @if (!deadline.IsCompleted && daysLeft <= 7 && daysLeft >= 0)
+                                    {
+                                        <span class="badge bg-danger ms-1">⚠️ @((int)daysLeft)d</span>
+                                    }
+                                    else if (!deadline.IsCompleted && daysLeft < 0)
+                                    {
+                                        <span class="badge bg-dark ms-1">Verlopen</span>
+                                    }
+                                </div>
+                                <form method="post" asp-page-handler="DeleteDeadline">
+                                    <input type="hidden" name="deadlineId" value="@deadline.Id" />
+                                    <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Deadline verwijderen?')">🗑️</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <!-- Contacts -->
+        <div class="card mb-3">
+            <div class="card-header fw-semibold">Contactmomenten</div>
+            <div class="card-body">
+                <!-- Add contact form -->
+                <form method="post" asp-page-handler="AddContact" class="mb-3">
+                    <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <input type="date" name="date" class="form-control form-control-sm"
+                                   value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="col-md-3">
+                            <select name="type" class="form-select form-select-sm">
+                                <option>Gesprek</option>
+                                <option>E-mail</option>
+                                <option>Telefoongesprek</option>
+                                <option>Bezoek</option>
+                                <option>Teams</option>
+                                <option>Overig</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="content" class="form-control form-control-sm"
+                                   placeholder="Omschrijving contactmoment" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">+ Voeg contactmoment toe</button>
+                </form>
+
+                @if (!Model.Student.Contacts.Any())
+                {
+                    <p class="text-muted small mb-0">Geen contactmomenten.</p>
+                }
+                else
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var contact in Model.Student.Contacts.OrderByDescending(c => c.Date))
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-start px-0">
+                                <div>
+                                    <span class="badge bg-secondary me-1">@contact.Type</span>
+                                    <small class="text-muted me-2">@contact.Date.ToString("dd-MM-yyyy")</small>
+                                    @contact.Content
+                                </div>
+                                <form method="post" asp-page-handler="DeleteContact">
+                                    <input type="hidden" name="contactId" value="@contact.Id" />
+                                    <input type="hidden" name="studentId" value="@Model.Student.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Contactmoment verwijderen?')">🗑️</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
