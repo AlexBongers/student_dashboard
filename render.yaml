@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: student-dashboard
+    runtime: docker
+    dockerfilePath: ./WebDashboard/Dockerfile
+    plan: free
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: student-data
+      mountPath: /data
+      sizeGB: 1

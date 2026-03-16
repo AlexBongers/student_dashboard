@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="logo-icon">🎓</span>
+        <span class="logo-text">StageTracker</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-view="dashboard" onclick="showView('dashboard')">
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-btn" data-view="students" onclick="showView('students')">
+          <span class="nav-icon">👥</span> Studenten
+        </button>
+        <button class="nav-btn" data-view="archived" onclick="showView('archived')">
+          <span class="nav-icon">📦</span> Archief
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Header -->
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <div class="top-bar-right">
+          <button class="btn btn-secondary" onclick="exportCsv()" title="Exporteer als CSV">⬇ Export CSV</button>
+          <button class="btn btn-primary" onclick="openAddStudentModal()">+ Student Toevoegen</button>
+        </div>
+      </header>
+
+      <!-- Dashboard View -->
+      <section id="view-dashboard" class="view active">
+        <!-- Stats Row -->
+        <div class="stats-row">
+          <div class="stat-card clickable" onclick="applyFilter('needsAction')">
+            <div class="stat-icon warning">⚠</div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-needs-action">0</div>
+              <div class="stat-label">Actie Vereist</div>
+            </div>
+          </div>
+          <div class="stat-card clickable" onclick="applyFilter('inReview')">
+            <div class="stat-icon info">📋</div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-in-review">0</div>
+              <div class="stat-label">In Review</div>
+            </div>
+          </div>
+          <div class="stat-card clickable" onclick="applyFilter('active')">
+            <div class="stat-icon primary">🎓</div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-active">0</div>
+              <div class="stat-label">Actieve Studenten</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon success">✅</div>
+            <div class="stat-body">
+              <div class="stat-value" id="stat-completed">0</div>
+              <div class="stat-label">Afgerond deze maand</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Alerts & Status Chart -->
+        <div class="dashboard-grid">
+          <div class="card alerts-card">
+            <div class="card-header">
+              <span>🔔</span> Actiecentrum
+              <span class="badge danger" id="alerts-badge" style="display:none"></span>
+            </div>
+            <div id="alerts-list" class="alerts-list">
+              <p class="empty-state">Geen acties vereist. Je bent helemaal bij! 🎉</p>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-header"><span>📈</span> Status Verdeling</div>
+            <div id="status-chart" class="status-chart"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Students View -->
+      <section id="view-students" class="view">
+        <div class="toolbar">
+          <input type="text" id="search-input" class="search-input" placeholder="🔍 Zoek op naam, bedrijf, status..." oninput="filterStudents()" />
+          <select id="filter-type" class="select-filter" onchange="filterStudents()">
+            <option value="">Alle types</option>
+            <option value="stage">Stage</option>
+            <option value="scriptie">Scriptie</option>
+          </select>
+          <select id="filter-status" class="select-filter" onchange="filterStudents()">
+            <option value="">Alle statussen</option>
+            <option value="Opstart">Opstart</option>
+            <option value="PvA">PvA</option>
+            <option value="Concept 1">Concept 1</option>
+            <option value="Concept 2">Concept 2</option>
+            <option value="Definitief">Definitief</option>
+            <option value="Herkansing">Herkansing</option>
+            <option value="Afgerond">Afgerond</option>
+          </select>
+        </div>
+        <div id="students-list" class="students-list"></div>
+      </section>
+
+      <!-- Archived View -->
+      <section id="view-archived" class="view">
+        <div id="archived-list" class="students-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Student Detail Drawer -->
+  <div id="detail-overlay" class="overlay hidden" onclick="closeDetail()"></div>
+  <aside id="student-detail" class="detail-drawer hidden">
+    <div class="drawer-header">
+      <div>
+        <h2 id="detail-name">Student</h2>
+        <span id="detail-type-badge" class="badge"></span>
+      </div>
+      <div class="drawer-header-actions">
+        <button class="btn btn-secondary btn-sm" id="archive-btn" onclick="toggleArchive()">Archiveren</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeDetail()">✕</button>
+      </div>
+    </div>
+
+    <div class="drawer-tabs">
+      <button class="tab-btn active" onclick="switchTab('info')">Info</button>
+      <button class="tab-btn" onclick="switchTab('workflow')">Workflow</button>
+      <button class="tab-btn" onclick="switchTab('contacts')">Contacten</button>
+      <button class="tab-btn" onclick="switchTab('deadlines')">Deadlines</button>
+      <button class="tab-btn" onclick="switchTab('notes')">Notities</button>
+    </div>
+
+    <!-- Info Tab -->
+    <div id="tab-info" class="tab-content active">
+      <div class="info-grid" id="detail-info-grid"></div>
+    </div>
+
+    <!-- Workflow Tab -->
+    <div id="tab-workflow" class="tab-content">
+      <div class="status-select-row">
+        <label>Status:</label>
+        <select id="workflow-status-select" onchange="updateWorkflowStatus(this.value)" class="select-filter"></select>
+      </div>
+      <div id="workflow-steps" class="workflow-steps"></div>
+    </div>
+
+    <!-- Contacts Tab -->
+    <div id="tab-contacts" class="tab-content">
+      <div class="form-section">
+        <h4>Nieuw Contactmoment</h4>
+        <div class="form-row">
+          <select id="new-contact-type" class="select-filter">
+            <option>Email</option>
+            <option>Telefoon</option>
+            <option>Teams</option>
+            <option>Bezoek</option>
+            <option>Overig</option>
+          </select>
+          <input type="date" id="new-contact-date" class="input" />
+        </div>
+        <textarea id="new-contact-content" class="textarea" placeholder="Noteer het contactmoment..." rows="3"></textarea>
+        <button class="btn btn-primary btn-sm" onclick="addContact()">+ Voeg Contact Toe</button>
+      </div>
+      <div id="contacts-list" class="contacts-list"></div>
+    </div>
+
+    <!-- Deadlines Tab -->
+    <div id="tab-deadlines" class="tab-content">
+      <div class="form-section">
+        <h4>Nieuwe Deadline</h4>
+        <input type="text" id="new-deadline-title" class="input" placeholder="Deadline omschrijving..." />
+        <input type="date" id="new-deadline-date" class="input" />
+        <button class="btn btn-primary btn-sm" onclick="addDeadline()">+ Voeg Deadline Toe</button>
+      </div>
+      <div id="deadlines-list" class="deadlines-list"></div>
+    </div>
+
+    <!-- Notes Tab -->
+    <div id="tab-notes" class="tab-content">
+      <textarea id="notes-textarea" class="textarea notes-textarea" placeholder="Voeg notities toe..." rows="15"></textarea>
+      <button class="btn btn-primary" onclick="saveNotes()">Notities Opslaan</button>
+    </div>
+  </aside>
+
+  <!-- Add Student Modal -->
+  <div id="modal-overlay" class="overlay hidden" onclick="closeModal()"></div>
+  <div id="add-student-modal" class="modal hidden">
+    <div class="modal-header">
+      <h2 id="modal-title">Student Toevoegen</h2>
+      <button class="btn btn-ghost" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Voornaam *</label>
+          <input type="text" id="f-firstname" class="input" required />
+        </div>
+        <div class="form-group">
+          <label>Achternaam *</label>
+          <input type="text" id="f-lastname" class="input" required />
+        </div>
+        <div class="form-group">
+          <label>Studentnummer</label>
+          <input type="text" id="f-studentnumber" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f-email" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Telefoon</label>
+          <input type="text" id="f-phone" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Type *</label>
+          <select id="f-type" class="select-filter">
+            <option value="stage">Stage</option>
+            <option value="scriptie">Scriptie</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mijn Rol</label>
+          <select id="f-role" class="select-filter">
+            <option value="docentbegeleider">Docentbegeleider</option>
+            <option value="1e examinator">1e Examinator</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bedrijf *</label>
+          <input type="text" id="f-company" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Studie</label>
+          <input type="text" id="f-studyprogram" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Cohort</label>
+          <input type="text" id="f-cohort" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Startdatum *</label>
+          <input type="date" id="f-startdate" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Einddatum *</label>
+          <input type="date" id="f-enddate" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="f-status" class="select-filter">
+            <option>Opstart</option>
+            <option>PvA</option>
+            <option>Concept 1</option>
+            <option>Concept 2</option>
+            <option>Definitief</option>
+            <option>Herkansing</option>
+            <option>Afgerond</option>
+          </select>
+        </div>
+        <div class="form-group full-width">
+          <label>Adres Student</label>
+          <input type="text" id="f-address" class="input" />
+        </div>
+        <div class="form-group full-width">
+          <label>Bedrijfsadres</label>
+          <input type="text" id="f-companyaddress" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Bedrijfsbegeleider Naam</label>
+          <input type="text" id="f-supervisorname" class="input" />
+        </div>
+        <div class="form-group">
+          <label>Bedrijfsbegeleider Email</label>
+          <input type="text" id="f-supervisoremail" class="input" />
+        </div>
+        <div class="form-group full-width">
+          <label>Notities</label>
+          <textarea id="f-notes" class="textarea" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuleren</button>
+      <button class="btn btn-primary" onclick="saveStudent()">Opslaan</button>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace WebDashboard.Models
+{
+    public class Student
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required]
+        public string LastName { get; set; } = string.Empty;
+
+        public string Name => $"{LastName}, {FirstName}";
+
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public string? StudentNumber { get; set; }
+
+        [Required]
+        public string Type { get; set; } = "stage";
+
+        public string MyRole { get; set; } = "docentbegeleider";
+
+        [Required]
+        public string Company { get; set; } = string.Empty;
+
+        public string? Location { get; set; }
+        public string? Address { get; set; }
+        public string? StudyProgram { get; set; }
+        public string? Cohort { get; set; }
+
+        public string? CompanyAddress { get; set; }
+        public string? CompanySupervisorName { get; set; }
+        public string? CompanySupervisorEmail { get; set; }
+        public string? CompanySupervisorPhone { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public string Status { get; set; } = "Opstart";
+        public string? Notes { get; set; }
+
+        public bool Archived { get; set; }
+        public DateTime? ArchivedAt { get; set; }
+
+        public bool HasUrgentDeadline => Deadlines?.Any(d => !d.IsCompleted && (d.DueDate.Date - DateTime.Today).TotalDays <= 7) ?? false;
+
+        public string? ProfilePicturePath { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public virtual ICollection<Contact> Contacts { get; set; } = new List<Contact>();
+        public virtual ICollection<WorkflowStep> WorkflowSteps { get; set; } = new List<WorkflowStep>();
+        public virtual ICollection<Deadline> Deadlines { get; set; } = new List<Deadline>();
+        public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
+    }
+}

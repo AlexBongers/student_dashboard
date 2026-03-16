@@ -8,3 +8,7 @@ obj/
 
 Publish/
 publish_single_file/
+
+# Web project build artifacts
+WebDashboard/bin/
+WebDashboard/obj/
